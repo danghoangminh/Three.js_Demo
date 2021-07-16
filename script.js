@@ -6,6 +6,7 @@ var stats;
 
 // controls 
 var obControl, afControl;
+
 // rotation values
 var rot_x = 0.01;
 var rot_y = 0.02;
