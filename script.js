@@ -329,6 +329,7 @@ function updateMesh(g, m) {
 		mesh.receiveShadow = false;
 	}
 	mesh.name = "object";
+	mesh.scale.set(settings['common'].scale, settings['common'].scale, settings['common'].scale);
 	scene.add(mesh);
 }
 
