@@ -46,7 +46,7 @@ function init() {
 
 	// main object
 	geometry = new THREE.BoxBufferGeometry(0.4, 0.4, 0.4);
-	material = new THREE.MeshBasicMaterial({ color: 0x222222 })
+	material = new THREE.MeshBasicMaterial({ color: 0xFFFFFF })
 	mesh = new THREE.Mesh(geometry, material);
 	mesh.castShadow = true;
 	mesh.receiveShadow = false;
@@ -62,7 +62,7 @@ function init() {
 	floorMesh.position.set(0, -0.6, 0);
 
 	// light
-	light = new THREE.PointLight(0xffffff, 2, 100);
+	light = new THREE.PointLight(0xFFFFFF, 2, 100);
 	light.position.set(0, 1, 0);
 	light.castShadow = true;            // default false
 
@@ -214,7 +214,7 @@ function geometryChanged() {
 
 			var points = curve.getPoints(50);
 			geometry = new THREE.BufferGeometry().setFromPoints(points);
-			material = new THREE.LineBasicMaterial({ color: 0xff0000 });
+			material = new THREE.LineBasicMaterial({ color: 0xFF0000 });
 			console.log('created geometry from curve');
 			break;
 
@@ -247,20 +247,32 @@ function affineChanged() {
 function matChanged() {
 	switch (settings['geometry'].material) {
 		case 'basic':
-			material = new THREE.MeshBasicMaterial({ color: 0x222222 })
+			material = new THREE.MeshBasicMaterial({ color: 0xFFFFFF })
 			break;
 		case 'line':
 			material = new THREE.MeshNormalMaterial();
 			material.wireframe = true;
 			break;
+		case 'normal':
+			material = new THREE.MeshNormalMaterial();
+			break;
+		case 'phong shading':
+			material = new THREE.MeshPhongMaterial({ color: 0xDDDDDD, specular: 0x009900, shininess: 10, flatShading: true });
+			break;
+		case 'lambert shading':
+			material = new THREE.MeshLambertMaterial({ color: 0xB00000, wireframe: false });
+			break;
+		case 'wire lambert':
+			material = new THREE.MeshLambertMaterial({ color: 0xB00000, wireframe: true });
+			break;
 		case 'texture 1':
-			var texture = new THREE.TextureLoader().load('https://i.imgur.com/e69Z1hI.jpg',
+			var texture = new THREE.TextureLoader().load('https://github.com/danghoangminh/three.js/blob/main/textures/texture_1.jpg',
 				function (texture) {
 					// do something with the texture
 					texture.wrapS = THREE.RepeatWrapping;
 					texture.wrapT = THREE.RepeatWrapping;
 					texture.repeat.set(10, 10);
-
+	
 					material = new THREE.MeshBasicMaterial({
 						map: texture
 					});
@@ -269,18 +281,17 @@ function matChanged() {
 				function (err) {
 					console.log(err);
 				}
-
 			);
 			material = new THREE.MeshBasicMaterial({ map: texture });
 			break;
 		case 'texture 2':
-			var texture = new THREE.TextureLoader().load('https://i.imgur.com/OIasWMD.jpg',
+			var texture = new THREE.TextureLoader().load('https://github.com/danghoangminh/three.js/blob/main/textures/texture_2.jpg',
 				function (texture) {
 					// do something with the texture
 					texture.wrapS = THREE.RepeatWrapping;
 					texture.wrapT = THREE.RepeatWrapping;
 					texture.repeat.set(1, 1);
-
+	
 					material = new THREE.MeshBasicMaterial({
 						map: texture
 					});
@@ -289,24 +300,10 @@ function matChanged() {
 				function (err) {
 					console.log(err);
 				}
-
 			);
 			material = new THREE.MeshBasicMaterial({ map: texture });
 			break;
-		case 'normal':
-			material = new THREE.MeshNormalMaterial();
-			break;
-		case 'phong shading':
-			material = new THREE.MeshPhongMaterial({ color: 0xdddddd, specular: 0x009900, shininess: 10, flatShading: true });
-			break;
-		case 'lambert shading':
-			material = new THREE.MeshLambertMaterial({ color: 0xb00000, wireframe: false });
-			break;
-		case 'wire lambert':
-			material = new THREE.MeshLambertMaterial({ color: 0xb00000, wireframe: true });
-			break;
 	}
-
 	updateMesh(geometry, material);
 }
 
