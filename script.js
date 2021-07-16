@@ -266,7 +266,7 @@ function matChanged() {
 			material = new THREE.MeshLambertMaterial({ color: 0xB00000, wireframe: true });
 			break;
 		case 'texture 1':
-			var texture = new THREE.TextureLoader().load('https://github.com/danghoangminh/three.js/blob/main/textures/texture_1.jpg',
+			var texture = new THREE.TextureLoader().load('https://i.imgur.com/e69Z1hI.jpg',
 				function (texture) {
 					// do something with the texture
 					texture.wrapS = THREE.RepeatWrapping;
@@ -285,7 +285,7 @@ function matChanged() {
 			material = new THREE.MeshBasicMaterial({ map: texture });
 			break;
 		case 'texture 2':
-			var texture = new THREE.TextureLoader().load('https://github.com/danghoangminh/three.js/blob/main/textures/texture_2.jpg',
+			var texture = new THREE.TextureLoader().load('https://i.imgur.com/OIasWMD.jpg',
 				function (texture) {
 					// do something with the texture
 					texture.wrapS = THREE.RepeatWrapping;
