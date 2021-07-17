@@ -228,6 +228,7 @@ function lightChanged() {
         light.visible = false;
         light.castShadow = false;
         light = new THREE.SpotLight(0xffffff, 2, 100);
+        light.add(new THREE.SpotLightHelper(light));
         light.visible = true;
         light.position.set(0, 1, 0);
         light.castShadow = true;
@@ -241,6 +242,7 @@ function lightChanged() {
         light.visible = false;
         light.castShadow = false;
         light = new THREE.PointLight(0xffffff, 2, 100);
+        light.add(new THREE.PointLightHelper(light));
         light.visible = true;
         light.position.set(0, 1, 0);
         light.castShadow = true;
@@ -255,6 +257,7 @@ function lightChanged() {
         light.visible = false;
         light.castShadow = false;
         light = new THREE.DirectionalLight(0xffffff, 2, 100);
+        light.add(new THREE.DirectionalLightHelper(light));
         light.visible = true;
         light.position.set(0, 1, 0);
         light.castShadow = true;
@@ -267,6 +270,7 @@ function lightChanged() {
         light.visible = false;
         light.castShadow = false;
         light = new THREE.AmbientLight(0xffffff, 2, 100);
+
         light.visible = true;
         light.position.set(0, 1, 0);
         scene.add(light);
