@@ -208,7 +208,7 @@ function initGUI() {
   });
 
   h.add(settings["light"], "intensity", 0, 50, 2).onChange(function () {
-    light.power = settings["light"].intensity;
+    light.intensity = settings["light"].intensity;
   });
 
   h = gui.addFolder("Affine");
@@ -223,8 +223,9 @@ function initGUI() {
 function lightChanged() {
   switch (settings["light"].lightType) {
     case "spotLight":
-      if (settings["light"].enable == false) light.visible = false;
+      if (settings["light"].enable === false) light.visible = false;
       else {
+        light.visible = false;
         light.castShadow = false;
         light = new THREE.SpotLight(0xffffff, 2, 100);
         light.visible = true;
@@ -235,7 +236,7 @@ function lightChanged() {
 
       break;
     case "pointLight":
-      if (settings["light"].enable == false) light.visible = false;
+      if (settings["light"].enable === false) light.visible = false;
       else {
         light.visible = false;
         light.castShadow = false;
@@ -248,12 +249,11 @@ function lightChanged() {
 
       break;
     case "directionalLight":
-      if (settings["light"].enable == false) light.visible = false;
+      if (settings["light"].enable === false) light.visible = false;
       else {
         //reset all effect of light
         light.visible = false;
         light.castShadow = false;
-        light.power = 4;
         light = new THREE.DirectionalLight(0xffffff, 2, 100);
         light.visible = true;
         light.position.set(0, 1, 0);
@@ -262,7 +262,7 @@ function lightChanged() {
       }
       break;
     case "ambientLight":
-      if (settings["light"].enable == false) light.visible = false;
+      if (settings["light"].enable === false) light.visible = false;
       else {
         light.visible = false;
         light.castShadow = false;
@@ -274,6 +274,8 @@ function lightChanged() {
       break;
   }
 }
+
+function updateLight() {}
 function geometryChanged() {
   switch (settings["geometry"].shape) {
     case "cone":
@@ -489,36 +491,4 @@ function initDragAndDrop() {
     },
     false
   );
-}
-function getPointLight(intensity) {
-  var light = new THREE.SpotLight(0xffffff, intensity);
-  light.castShadow = true;
-  return light;
-}
-
-function getSpotLight(intensity) {
-  var light = new THREE.SpotLight(0xffffff, intensity);
-  light.castShadow = true;
-
-  // light.shadow.bias = 0.001;
-  // light.shadow.mapSize.width = 2048;
-  // light.shadow.mapSize.height = 2048;
-  return light;
-}
-function getDirectionalLight(intensity) {
-  var light = new THREE.DirectionalLight(0xffffff, intensity);
-  light.castShadow = true;
-
-  light.shadow.camera.left = -10;
-  light.shadow.camera.bottom = -10;
-  light.shadow.camera.right = 10;
-  light.shadow.camera.top = 10;
-
-  return light;
-}
-
-function getAmbientLight(intensity) {
-  //dont cast shadow
-  var light = new THREE.AmbientLight("rgb(10,30,50)", intensity);
-  return light;
 }
