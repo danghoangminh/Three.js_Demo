@@ -160,12 +160,14 @@ function initGUI() {
     "basic",
     "normal",
     "line",
-    "texture 1",
-    "texture 2",
     "phong shading",
     "lambert shading",
     "wire lambert",
+    "texture 1",
+    "texture 2",
+    "choose image",
   ]).name("Material").onChange(matChanged);
+
   h.add(settings["geometry"], "shape", [
     "cube",
     "cone",
@@ -174,8 +176,8 @@ function initGUI() {
     "cylinder",
     "teapot",
   ]).name("Shape").onChange(geometryChanged);
-  h = gui.addFolder("Light");
 
+  h = gui.addFolder("Light");
   h.add(settings["light"], "lightType", [
     "pointLight",
     "spotLight",
@@ -234,7 +236,6 @@ function lightChanged() {
         light.castShadow = true;
         scene.add(light);
       }
-
       break;
     case "pointLight":
       if (settings["light"].enable === false) light.visible = false;
@@ -248,7 +249,6 @@ function lightChanged() {
         light.castShadow = true;
         scene.add(light);
       }
-
       break;
     case "directionalLight":
       if (settings["light"].enable === false) light.visible = false;
@@ -305,18 +305,6 @@ function geometryChanged() {
         true,
         true
       );
-      break;
-    case "custom":
-      var curve = new THREE.QuadraticBezierCurve3(
-        new THREE.Vector3(-10, 0, 0),
-        new THREE.Vector3(20, 15, 0),
-        new THREE.Vector3(10, 0, 0)
-      );
-
-      var points = curve.getPoints(50);
-      geometry = new THREE.BufferGeometry().setFromPoints(points);
-      material = new THREE.LineBasicMaterial({ color: 0xff0000 });
-      console.log("created geometry from curve");
       break;
   }
   updateMesh(geometry, material);
@@ -416,6 +404,9 @@ function matChanged() {
       );
       material = new THREE.MeshBasicMaterial({ map: texture });
       break;
+    case "choose image":
+      uploadImage();
+      break;
   }
   updateMesh(geometry, material);
 }
@@ -464,6 +455,10 @@ function genDotMaterial() {
     map: texture,
   });
   return mat;
+}
+
+function uploadImage() {
+  console.log("clicked");
 }
 
 function initDragAndDrop() {
