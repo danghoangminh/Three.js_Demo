@@ -139,21 +139,21 @@ function onWindowResize() {
 function initGUI() {
   gui = new dat.GUI();
   h = gui.addFolder("Common");
-  h.add(settings["common"], "scale", 0.1, 2, 0.1).onChange(function () {
+  h.add(settings["common"], "scale", 0.1, 2, 0.1).name("Scale").onChange(function () {
     mesh.scale.set(
       settings["common"].scale,
       settings["common"].scale,
       settings["common"].scale
     );
   });
-  h.add(settings["common"], "showaxes").onChange(function () {
+  h.add(settings["common"], "showaxes").name("Show Axes").onChange(function () {
     if (settings["common"].showaxes == true) {
       axes.visible = true;
     } else {
       axes.visible = false;
     }
   });
-  h.add(settings["common"], "autorotate");
+  h.add(settings["common"], "autorotate").name("Auto Rotate");
 
   h = gui.addFolder("Geometry");
   h.add(settings["geometry"], "material", [
@@ -165,7 +165,7 @@ function initGUI() {
     "phong shading",
     "lambert shading",
     "wire lambert",
-  ]).onChange(matChanged);
+  ]).name("Material").onChange(matChanged);
   h.add(settings["geometry"], "shape", [
     "cube",
     "cone",
@@ -173,7 +173,7 @@ function initGUI() {
     "torus",
     "cylinder",
     "teapot",
-  ]).onChange(geometryChanged);
+  ]).name("Shape").onChange(geometryChanged);
   h = gui.addFolder("Light");
 
   h.add(settings["light"], "lightType", [
@@ -181,21 +181,21 @@ function initGUI() {
     "spotLight",
     "directionalLight",
     "ambientLight",
-  ]).onChange(lightChanged);
+  ]).name("Light Type").onChange(lightChanged);
 
-  h.add(settings["light"], "enable").onChange(function () {
+  h.add(settings["light"], "enable").name("Enable").onChange(function () {
     if (settings["light"].enable == true) {
       light.visible = true;
     } else light.visible = false;
   });
 
-  h.add(settings["light"], "autorotate").onChange(function () {
+  h.add(settings["light"], "autorotate").name("Auto Rotate").onChange(function () {
     if (settings["light"].autorotate == true) {
       console.log("rotating light");
     }
   });
 
-  h.add(settings["light"], "shadow").onChange(function () {
+  h.add(settings["light"], "shadow").name("Shadows").onChange(function () {
     if (settings["light"].shadow == false) {
       console.log("no shadows");
       floorMesh.receiveShadow = false;
@@ -207,7 +207,7 @@ function initGUI() {
     }
   });
 
-  h.add(settings["light"], "intensity", 0, 50, 2).onChange(function () {
+  h.add(settings["light"], "intensity", 0, 50, 2).name("Intensity").onChange(function () {
     light.intensity = settings["light"].intensity;
   });
 
@@ -217,7 +217,7 @@ function initGUI() {
     "translate",
     "rotate",
     "scale",
-  ]).onChange(affineChanged);
+  ]).name("Mode").onChange(affineChanged);
 }
 
 function lightChanged() {
