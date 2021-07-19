@@ -12,11 +12,14 @@ var rot_x = 0.01;
 var rot_y = 0.02;
 var alpha = 0;
 
+// clock
+var clock = new THREE.Clock();
+
 // gui settings
 var settings = {
   common: {
     scale: 1,
-    autorotate: true,
+    autorotate: false,
     showaxes: true,
   },
   geometry: {
@@ -34,11 +37,14 @@ var settings = {
   affine: {
     mode: "none",
   },
+  animation: {
+    animate: false,
+  },
 };
 
 init();
 initGUI();
-animate();
+animate(clock);
 
 function init() {
   camera = new THREE.PerspectiveCamera(
@@ -47,8 +53,33 @@ function init() {
     0.1,
     1000
   );
+
+  // var cameraZRotation = new THREE.Group();
+  // var cameraYPosition = new THREE.Group();
+  // var cameraZPosition = new THREE.Group();
+  // var cameraXRotation = new THREE.Group();
+  // var cameraYRotation = new THREE.Group();
+
+  // cameraZRotation.name = "cameraZRotation";
+  // cameraYPosition.name = "cameraYPosition";
+  // cameraZPosition.name = "cameraZPosition";
+  // cameraXRotation.name = "cameraXRotation";
+  // cameraYRotation.name = "cameraYRotation";
+
+  // cameraYPosition.add(camera);
+  // cameraZPosition.add(cameraYPosition);
+  // cameraXRotation.add(cameraZPosition);
+  // cameraYRotation.add(cameraXRotation);
+
   camera.position.z = 2;
   scene = new THREE.Scene();
+  // scene.add(cameraYRotation);
+
+  // gui = new dat.GUI();
+  // gui.add(cameraZPosition.position, "z", 0, 100);
+  // gui.add(cameraYRotation.rotation, "y", -Math.PI, Math.PI);
+  // gui.add(cameraXRotation.rotation, "x", -Math.PI, Math.PI);
+  // gui.add(cameraZRotation.rotation, "z", -Math.PI, Math.PI);
 
   // main object
   geometry = new THREE.BoxBufferGeometry(0.4, 0.4, 0.4);
@@ -88,7 +119,6 @@ function init() {
   // stats
   stats = new Stats();
   document.body.appendChild(stats.dom);
-
   // controls
   var controls = new THREE.OrbitControls(camera, renderer.domElement);
   controls.maxPolarAngle = Math.PI * 1;
@@ -108,9 +138,47 @@ function init() {
   window.addEventListener("resize", onWindowResize, false);
 }
 
-function animate() {
+function animate(clock) {
   requestAnimationFrame(animate);
 
+  // var cameraXRotation = scene.getObjectByName("cameraXRotation");
+  // var cameraYPosition = scene.getObjectByName("cameraYPosition");
+  // var cameraZPosition = scene.getObjectByName("cameraZPosition");
+
+  // if (settings["animation"].animate == true) {
+  //   cameraXRotation.rotation.x = Math.PI / 2;
+
+  //   if (cameraXRotation.rotation.x > 0) {
+  //     cameraXRotation.rotation.x -= 0.01;
+  //     console.log("1");
+  //   }
+
+  //   if (cameraZPosition.position.z >= 3) {
+  //     cameraZPosition.position.z -= 0.25;
+  //   }
+  // }
+
+  if (settings["animation"].animate == true) {
+    // mesh.rotation.x += 0.01;
+    // mesh.rotation.y += 0.02;
+    // mesh.rotation.z += 0.02;
+    // mesh.scale.x += 0.01;
+    // mesh.scale.y += 0.01;
+    // mesh.scale.z += 0.01;
+    // const timer = Date.now() - start;
+    // mesh.position.y = Math.abs(Math.sin(timer * 0.002)) * 150;
+    // mesh.rotation.x = timer * 0.0003;
+    // mesh.rotation.z = timer * 0.0002;
+
+    // var timeElapsed = clock.getElapsedTime();
+
+    if (mesh.position.y <= 0.5) {
+      mesh.scale.y += 0.01;
+      mesh.position.y += 0.01;
+    } else {
+      if (mesh.scale.x < 1002) mesh.scale.x += 0.01;
+    }
+  }
   if (settings["common"].autorotate == true) {
     mesh.rotation.x += 0.01;
     mesh.rotation.y += 0.02;
@@ -218,6 +286,17 @@ function initGUI() {
     "rotate",
     "scale",
   ]).onChange(affineChanged);
+
+  h = gui.addFolder("Animation");
+  h.add(settings["animation"], "animate");
+  //   .onChange(function () {
+  //   if (settings["animation"].animate == true) {
+  //     cameraYPosition.position.y = 1;
+  //     cameraZPosition.position.z = 100;
+  //   } else {
+  //     camera.position.z = 2;
+  //   }
+  // });
 }
 
 function lightChanged() {
