@@ -16,7 +16,7 @@ var alpha = 0;
 var settings = {
   common: {
     scale: 1,
-    autorotate: true,
+    autorotate: false,
     showaxes: true,
   },
   geometry: {
@@ -279,7 +279,6 @@ function lightChanged() {
   }
 }
 
-function updateLight() {}
 function geometryChanged() {
   switch (settings["geometry"].shape) {
     case "cone":
