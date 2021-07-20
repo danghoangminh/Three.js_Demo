@@ -1,8 +1,15 @@
+import {GLTFLoader} from 'https://threejsfundamentals.org/threejs/resources/threejs/r127/examples/jsm/loaders/GLTFLoader.js';
+// import {GLTFLoader} from './libs/GLTFLoader.js';
+
+
 // global variables
 var camera, scene, renderer;
 var floor, geometry, material, mesh, floorMesh, light, axes;
 var gui;
 var stats;
+
+
+const loader = new GLTFLoader();
 
 // controls
 var obControl, afControl;
@@ -138,7 +145,7 @@ function onWindowResize() {
 
 function initGUI() {
   gui = new dat.GUI();
-  h = gui.addFolder("Common");
+  var h = gui.addFolder("Common");
   h.add(settings["common"], "scale", 0.1, 2, 0.1).name("Scale").onChange(function () {
     mesh.scale.set(
       settings["common"].scale,
@@ -175,6 +182,7 @@ function initGUI() {
     "torus",
     "cylinder",
     "teapot",
+    "3d_model",
   ]).name("Shape").onChange(geometryChanged);
 
   h = gui.addFolder("Light");
@@ -306,8 +314,52 @@ function geometryChanged() {
         true
       );
       break;
+    case "3d_model":
+      var path = 'models/teapot/scene.gltf';
+      geometry = GetGeometryFrom3DModel(path, 1, 1, 1);
+      break;
   }
   updateMesh(geometry, material);
+}
+
+function GetGeometryFrom3DModel(path, scale_x, scale_y, scale_z) {
+  var geome;
+	loader.load(path, function ( gltf ) {
+		gltf.scene.traverse(function(child) {
+			// child.scale.set(100, 100, 100);
+			if(child.isMesh){
+				// console.log(child.name);
+				console.log( child.geometry);
+				// var tea_cup = gltf.scene.children.find((child) => child.name === "tazza__0");
+				child.scale.set(child.scale.x * scale_x,
+								child.scale.y * scale_y,
+								child.scale.z * scale_z);
+
+				geome = child.geometry;
+
+				return;
+			}
+
+			if ( child.geometry !== undefined ) {
+
+				console.log( child.geometry.vertices );
+		
+			}
+			
+			scene.add(child);
+			// console.log(child.name);
+			
+			
+		})
+		// scene.add(gltf.scene);
+
+	}, undefined, function ( error ) {
+
+		console.error( error );
+
+	} );
+
+	return geome;
 }
 
 function affineChanged() {
