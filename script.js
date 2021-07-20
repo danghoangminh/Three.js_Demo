@@ -49,6 +49,11 @@ function init() {
   );
   camera.position.z = 2;
   scene = new THREE.Scene();
+  const loader = new THREE.TextureLoader();
+  loader.load("https://i.imgur.com/MHKPi6F.jpeg" , function(texture)
+  {
+    scene.background = texture;  
+  });
 
   // main object
   geometry = new THREE.BoxBufferGeometry(0.4, 0.4, 0.4);
