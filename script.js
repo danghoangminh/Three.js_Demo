@@ -1,14 +1,10 @@
 import {GLTFLoader} from 'https://threejsfundamentals.org/threejs/resources/threejs/r127/examples/jsm/loaders/GLTFLoader.js';
-// import {GLTFLoader} from './libs/GLTFLoader.js';
-
 
 // global variables
-var camera, scene, renderer, reflectionCamera;
+var camera, scene, renderer, reflectionCamera, cubeRenderTarget;
 var floor, geometry, material, mesh, floorMesh, light, axes;
 var gui;
 var stats;
-
-var cubeRenderTarget;
 
 var change_material = false;
 var model_3d;
@@ -216,8 +212,10 @@ function initGUI() {
     "phong shading",
     "lambert shading",
     "wire lambert",
-    "texture 1",
-    "texture 2",
+    "Wood texture 1",
+    "Wood texture 2",
+    "Concrete texture 1",
+    "Concrete texture 2",
     "choose image",
   ]).name("Material").onChange(matChanged);
 
@@ -482,14 +480,14 @@ function matChanged() {
         wireframe: true,
       });
       break;
-    case "texture 1":
+    case "Wood texture 1":
       var texture = new THREE.TextureLoader().load(
-        "https://i.imgur.com/e69Z1hI.jpg",
+        "/images/textures/e69Z1hI.jpg",
         function (texture) {
           // do something with the texture
           texture.wrapS = THREE.RepeatWrapping;
           texture.wrapT = THREE.RepeatWrapping;
-          texture.repeat.set(10, 10);
+          texture.repeat.set(5, 5);
 
           material = new THREE.MeshBasicMaterial({
             map: texture,
@@ -502,9 +500,49 @@ function matChanged() {
       );
       material = new THREE.MeshBasicMaterial({ map: texture });
       break;
-    case "texture 2":
+    case "Wood texture 2":
       var texture = new THREE.TextureLoader().load(
-        "https://i.imgur.com/OIasWMD.jpg",
+        "/images/textures/OIasWMD.jpg",
+        function (texture) {
+          // do something with the texture
+          texture.wrapS = THREE.RepeatWrapping;
+          texture.wrapT = THREE.RepeatWrapping;
+          texture.repeat.set(5, 5);
+
+          material = new THREE.MeshBasicMaterial({
+            map: texture,
+          });
+        },
+        undefined,
+        function (err) {
+          console.log(err);
+        }
+      );
+      material = new THREE.MeshBasicMaterial({ map: texture });
+      break;
+      case "Concrete texture 1":
+      var texture = new THREE.TextureLoader().load(
+        "/images/textures/annie-spratt-osuiatBDTww-unsplash.jpg",
+        function (texture) {
+          // do something with the texture
+          texture.wrapS = THREE.RepeatWrapping;
+          texture.wrapT = THREE.RepeatWrapping;
+          texture.repeat.set(1, 1);
+
+          material = new THREE.MeshBasicMaterial({
+            map: texture,
+          });
+        },
+        undefined,
+        function (err) {
+          console.log(err);
+        }
+      );
+      material = new THREE.MeshBasicMaterial({ map: texture });
+      break;
+      case "Concrete texture 2":
+      var texture = new THREE.TextureLoader().load(
+        "/images/textures/nick-iliasov-i0fCUofGjV8-unsplash.jpg",
         function (texture) {
           // do something with the texture
           texture.wrapS = THREE.RepeatWrapping;
