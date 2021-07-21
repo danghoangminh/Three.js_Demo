@@ -3,10 +3,26 @@ import {GLTFLoader} from 'https://threejsfundamentals.org/threejs/resources/thre
 
 
 // global variables
-var camera, scene, renderer;
+var camera, scene, renderer, reflectionCamera;
 var floor, geometry, material, mesh, floorMesh, light, axes;
 var gui;
 var stats;
+
+var cubeRenderTarget;
+
+var change_material = false;
+var model_3d;
+
+// create a texture loader.
+const model_3d_textureLoader = new THREE.TextureLoader();
+// load a texture
+const model_3d_texture = model_3d_textureLoader.load(
+  '/models/tyrannosaurus_rex_skeleton/textures/dyno_tex_Material_u1_v1_baseColor.jpeg',
+);
+// create a "standard" material using
+const model_3d_material = new THREE.MeshStandardMaterial({
+  map: model_3d_texture,
+});
 
 
 const loader = new GLTFLoader();
@@ -65,14 +81,31 @@ function init() {
   mesh.receiveShadow = false;
   mesh.name = "object";
 
+  // load the cube map
+  var cubemap_path = '/images/cubemap/skyboxsun25deg/';
+  var cubemap_format = '.jpg';
+  var urls = [
+    cubemap_path + 'px' + cubemap_format, cubemap_path + 'nx' + cubemap_format,
+    cubemap_path + 'py' + cubemap_format, cubemap_path + 'ny' + cubemap_format,
+    cubemap_path + 'pz' + cubemap_format, cubemap_path + 'nz' + cubemap_format,
+  ];
+  var refection_cube = new THREE.CubeTextureLoader().load(urls);
+  refection_cube.format = THREE.RGBFormat;
+
   // floor
   floor = new THREE.PlaneBufferGeometry(5, 5, 32, 32);
-  var floorMat = new THREE.MeshStandardMaterial({ color: 0x222222 });
+  
+  var floorMat = new THREE.MeshStandardMaterial({ color: 0x222222, side: THREE.DoubleSide });
+  var texture_loader = new THREE.TextureLoader();
+  floorMat.map = texture_loader.load('/images/textures/abstract-gray-wall.jpg');
+  floorMat.envMap = refection_cube;
+
   floorMesh = new THREE.Mesh(floor, floorMat);
   floorMesh.receiveShadow = true;
   floorMesh.rotation.x = -Math.PI / 2.0;
   floorMesh.name = "floor";
   floorMesh.position.set(0, -0.6, 0);
+
 
   // light
   light = new THREE.PointLight(0xffffff, 2, 100);
@@ -81,6 +114,15 @@ function init() {
 
   // axesHelper
   axes = new THREE.GridHelper(100, 2);
+
+  // add camera for reflection
+  cubeRenderTarget = new THREE.WebGLCubeRenderTarget( 128,{ 
+    format: THREE.RGBFormat,
+    generateMipmaps: true,
+    minFilter: THREE.LinearMipmapLinearFilter
+  } );
+  reflectionCamera = new THREE.CubeCamera(1, 1000, cubeRenderTarget);
+  mesh.add(reflectionCamera);
 
   // add object and floor to scene
   scene.add(floorMesh);
@@ -91,6 +133,9 @@ function init() {
   renderer.shadowMap.enabled = true;
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
+
+  // add background to scene
+  scene.background = refection_cube;
 
   // stats
   stats = new Stats();
@@ -133,6 +178,7 @@ function animate() {
   }
 
   renderer.render(scene, camera);
+  reflectionCamera.update( renderer, scene );
   stats.update();
 }
 
@@ -182,7 +228,8 @@ function initGUI() {
     "torus",
     "cylinder",
     "teapot",
-    "3d_model",
+    "3d_model_teapot",
+    "3d_model_tire",
   ]).name("Shape").onChange(geometryChanged);
 
   h = gui.addFolder("Light");
@@ -288,6 +335,7 @@ function lightChanged() {
 }
 
 function geometryChanged() {
+  if (settings["geometry"].shape != "")
   switch (settings["geometry"].shape) {
     case "cone":
       geometry = new THREE.ConeBufferGeometry(0.4, 0.4, 32, 32);
@@ -313,53 +361,67 @@ function geometryChanged() {
         true,
         true
       );
+      is_model_3d_in_scene = false;
       break;
-    case "3d_model":
+    case "3d_model_teapot":
       var path = 'models/teapot/scene.gltf';
-      geometry = GetGeometryFrom3DModel(path, 1, 1, 1);
-      break;
+      GetGeometryFrom3DModel(path, 0.5, 0.5, 0.5);
+      return;
+    case "3d_model_tire":
+      var path = 'models/3d_vehicle_tire_base_mesh/scene.gltf';
+      geometry = GetGeometryFrom3DModel(path, 0.4, 0.4, 0.4);
+      return;
   }
   updateMesh(geometry, material);
 }
 
+// function GetGeometryFrom3DModel(path, scale_x, scale_y, scale_z) {
+//     loader.load(path, function ( gltf ) {
+      
+//       // gltf.scene.traverse(function(child) {
+//       //   if(child.isMesh) {
+//       //     console.log(child.name);
+//       //     // child.material = new THREE.MeshPhongMaterial({color: 0xff00ff});
+//       //   }
+//       // })
+
+//       is_model_3d_in_scene = true;
+//       model_3d = gltf.scene;
+
+//       // console.log(model_3d.position);
+
+//       model_3d.scale.x = model_3d.scale.x * scale_x;
+//       model_3d.scale.y = model_3d.scale.y * scale_y;
+//       model_3d.scale.z = model_3d.scale.z * scale_z;
+
+//       scene.add( model_3d );   
+//     }, undefined, function ( error ) {
+//       reject(error);
+//     } );
+// }
+
 function GetGeometryFrom3DModel(path, scale_x, scale_y, scale_z) {
-  var geome;
 	loader.load(path, function ( gltf ) {
-		gltf.scene.traverse(function(child) {
-			// child.scale.set(100, 100, 100);
+		gltf.scene.traverse(function(child, geome) {
 			if(child.isMesh){
-				// console.log(child.name);
-				console.log( child.geometry);
-				// var tea_cup = gltf.scene.children.find((child) => child.name === "tazza__0");
+
 				child.scale.set(child.scale.x * scale_x,
 								child.scale.y * scale_y,
 								child.scale.z * scale_z);
 
-				geome = child.geometry;
-
-				return;
+        geometry = child.geometry.scale(
+                child.scale.x * scale_x,
+								child.scale.y * scale_y,
+								child.scale.z * scale_z
+        ).clone();
+      
+        updateMesh(geometry, material);
+        return 0;
 			}
-
-			if ( child.geometry !== undefined ) {
-
-				console.log( child.geometry.vertices );
-		
-			}
-			
-			scene.add(child);
-			// console.log(child.name);
-			
-			
 		})
-		// scene.add(gltf.scene);
-
 	}, undefined, function ( error ) {
-
 		console.error( error );
-
 	} );
-
-	return geome;
 }
 
 function affineChanged() {
@@ -385,6 +447,7 @@ function affineChanged() {
 }
 
 function matChanged() {
+  change_material = true;
   switch (settings["geometry"].material) {
     case "basic":
       material = new THREE.MeshBasicMaterial({ color: 0xffffff });
@@ -406,8 +469,11 @@ function matChanged() {
       break;
     case "lambert shading":
       material = new THREE.MeshLambertMaterial({
-        color: 0xb00000,
+        // color: 0xb00000,
         wireframe: false,
+        envMap: cubeRenderTarget.texture,      
+        combine: THREE.MixOperation,     
+        reflectivity: .7
       });
       break;
     case "wire lambert":
@@ -463,6 +529,14 @@ function matChanged() {
   updateMesh(geometry, material);
 }
 
+function reApplyTexture() {
+  model_3d.traverse(function(child){
+    if(child.isMesh) {
+      child.material = model_3d_material;
+    }
+  })
+}
+
 /* utilities */
 function clearGeometry() {
   for (var i = 0; i < scene.children.length; i++) {
@@ -476,20 +550,28 @@ function clearAffine() {
 }
 
 function updateMesh(g, m) {
-  clearAffine();
-  clearGeometry();
-  mesh = new THREE.Mesh(g, m);
-  if (settings["light"].shadow == true) {
-    mesh.castShadow = true;
-    mesh.receiveShadow = false;
+  if(change_material == false) {
+    clearAffine();
+    clearGeometry();
+    mesh = new THREE.Mesh(g, m);
+    if (settings["light"].shadow == true) {
+      mesh.castShadow = true;
+      mesh.receiveShadow = false;
+    }
+    mesh.name = "object";
+    mesh.scale.set(
+      settings["common"].scale,
+      settings["common"].scale,
+      settings["common"].scale
+    );
+    console.log(mesh.position);
+    console.log(mesh.visible);
+    scene.add(mesh);
   }
-  mesh.name = "object";
-  mesh.scale.set(
-    settings["common"].scale,
-    settings["common"].scale,
-    settings["common"].scale
-  );
-  scene.add(mesh);
+  else{
+    change_material = false;
+    mesh.material = m;
+  }
 }
 
 function genDotMaterial() {
