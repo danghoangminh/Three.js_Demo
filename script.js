@@ -21,6 +21,7 @@ var settings = {
   },
   geometry: {
     shape: "cube",
+    color: "#ffffff",
     material: "basic",
   },
   light: {
@@ -49,15 +50,11 @@ function init() {
   );
   camera.position.z = 2;
   scene = new THREE.Scene();
-  const loader = new THREE.TextureLoader();
-  loader.load("https://i.imgur.com/MHKPi6F.jpeg" , function(texture)
-  {
-    scene.background = texture;  
-  });
+  scene.background = new THREE.TextureLoader().load("https://i.imgur.com/MHKPi6F.jpeg");
 
   // main object
   geometry = new THREE.BoxBufferGeometry(0.4, 0.4, 0.4);
-  material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+  material = new THREE.MeshBasicMaterial({ color: "#ffffff" });
   mesh = new THREE.Mesh(geometry, material);
   mesh.castShadow = true;
   mesh.receiveShadow = false;
@@ -161,6 +158,9 @@ function initGUI() {
   h.add(settings["common"], "autorotate").name("Auto Rotate");
 
   h = gui.addFolder("Geometry");
+  
+  h.addColor(settings["geometry"], 'color').name("Color").onChange(matChanged);
+  
   h.add(settings["geometry"], "material", [
     "basic",
     "normal",
@@ -340,7 +340,7 @@ function affineChanged() {
 function matChanged() {
   switch (settings["geometry"].material) {
     case "basic":
-      material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      material = new THREE.MeshBasicMaterial({ color: settings["geometry"].color });
       break;
     case "line":
       material = new THREE.MeshNormalMaterial();
