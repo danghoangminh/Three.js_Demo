@@ -351,7 +351,7 @@ function matChanged() {
       break;
     case "phong shading":
       material = new THREE.MeshPhongMaterial({
-        color: 0xdddddd,
+        color: settings["geometry"].color,
         specular: 0x009900,
         shininess: 10,
         flatShading: true,
@@ -359,13 +359,13 @@ function matChanged() {
       break;
     case "lambert shading":
       material = new THREE.MeshLambertMaterial({
-        color: 0xb00000,
+        color: settings["geometry"].color,
         wireframe: false,
       });
       break;
     case "wire lambert":
       material = new THREE.MeshLambertMaterial({
-        color: 0xb00000,
+        color: settings["geometry"].color,
         wireframe: true,
       });
       break;
@@ -445,53 +445,6 @@ function updateMesh(g, m) {
   scene.add(mesh);
 }
 
-function genDotMaterial() {
-  var canvas = document.createElement("canvas");
-  canvas.width = 64;
-  canvas.height = 64;
-
-  var ctx = canvas.getContext("2d");
-  ctx.beginPath();
-  ctx.arc(16, 16, 12, 0, 2 * Math.PI);
-  ctx.stroke();
-
-  var texture = THREE.CanvasTexture(canvas);
-  var mat = new THREE.MeshBasicMaterial({
-    map: texture,
-  });
-  return mat;
-}
-
 function uploadImage() {
   console.log("clicked");
-}
-
-function initDragAndDrop() {
-  document.addEventListener(
-    "dragover",
-    function (event) {
-      event.preventDefault();
-      event.dataTransfer.dropEffect = "copy";
-    },
-    false
-  );
-
-  document.addEventListener(
-    "drop",
-    function (event) {
-      event.preventDefault();
-
-      // load file
-      var reader = new FileReader();
-      reader.addEventListener(
-        "load",
-        function (ev) {
-          handleJPG(ev);
-        },
-        false
-      );
-      reader.readAsDataURL(event.dataTransfer.files[0]);
-    },
-    false
-  );
 }
