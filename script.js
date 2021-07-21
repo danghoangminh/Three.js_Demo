@@ -32,6 +32,7 @@ var settings = {
   },
   geometry: {
     shape: "cube",
+    color: "#ffffff",
     material: "basic",
   },
   light: {
@@ -60,10 +61,11 @@ function init() {
   );
   camera.position.z = 2;
   scene = new THREE.Scene();
+  scene.background = new THREE.TextureLoader().load("https://i.imgur.com/MHKPi6F.jpeg");
 
   // main object
   geometry = new THREE.BoxBufferGeometry(0.4, 0.4, 0.4);
-  material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+  material = new THREE.MeshBasicMaterial({ color: "#ffffff" });
   mesh = new THREE.Mesh(geometry, material);
   mesh.castShadow = true;
   mesh.receiveShadow = false;
@@ -196,6 +198,9 @@ function initGUI() {
   h.add(settings["common"], "autorotate").name("Auto Rotate");
 
   h = gui.addFolder("Geometry");
+  
+  h.addColor(settings["geometry"], 'color').name("Color").onChange(matChanged);
+  
   h.add(settings["geometry"], "material", [
     "basic",
     "normal",
@@ -414,7 +419,7 @@ function matChanged() {
   change_material = true;
   switch (settings["geometry"].material) {
     case "basic":
-      material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      material = new THREE.MeshBasicMaterial({ color: settings["geometry"].color });
       break;
     case "normal":
       material = new THREE.MeshNormalMaterial();
@@ -425,7 +430,7 @@ function matChanged() {
       break;
     case "phong shading":
       material = new THREE.MeshPhongMaterial({
-        color: 0xdddddd,
+        color: settings["geometry"].color,
         specular: 0x009900,
         shininess: 10,
         flatShading: true,
@@ -441,7 +446,7 @@ function matChanged() {
       break;
     case "wire lambert":
       material = new THREE.MeshLambertMaterial({
-        color: 0xb00000,
+        color: settings["geometry"].color,
         wireframe: true,
       });
       break;
