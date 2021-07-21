@@ -1,15 +1,26 @@
+import { GLTFLoader } from 'https://threejsfundamentals.org/threejs/resources/threejs/r127/examples/jsm/loaders/GLTFLoader.js';
+
 // global variables
-var camera, scene, renderer;
+var camera, scene, renderer, reflectionCamera, cubeRenderTarget;
 var floor, geometry, material, mesh, floorMesh, light, axes;
 var gui;
 var stats;
 
+var change_material = false;
+
+// create a texture loader.
+const model_3d_textureLoader = new THREE.TextureLoader();
+// load a texture
+const model_3d_texture = model_3d_textureLoader.load(
+  '/models/tyrannosaurus_rex_skeleton/textures/dyno_tex_Material_u1_v1_baseColor.jpeg',
+);
+
+const loader = new GLTFLoader();
+
 // controls
-var obControl, afControl;
+var afControl;
 
 // rotation values
-var rot_x = 0.01;
-var rot_y = 0.02;
 var alpha = 0;
 
 // gui settings
@@ -60,14 +71,31 @@ function init() {
   mesh.receiveShadow = false;
   mesh.name = "object";
 
+  // load the cube map
+  var cubemap_path = '/images/cubemap/skyboxsun25deg/';
+  var cubemap_format = '.jpg';
+  var urls = [
+    cubemap_path + 'px' + cubemap_format, cubemap_path + 'nx' + cubemap_format,
+    cubemap_path + 'py' + cubemap_format, cubemap_path + 'ny' + cubemap_format,
+    cubemap_path + 'pz' + cubemap_format, cubemap_path + 'nz' + cubemap_format,
+  ];
+  var refection_cube = new THREE.CubeTextureLoader().load(urls);
+  refection_cube.format = THREE.RGBFormat;
+
   // floor
   floor = new THREE.PlaneBufferGeometry(5, 5, 32, 32);
-  var floorMat = new THREE.MeshStandardMaterial({ color: 0x222222 });
+
+  var floorMat = new THREE.MeshStandardMaterial({ color: 0x222222, side: THREE.DoubleSide });
+  var texture_loader = new THREE.TextureLoader();
+  floorMat.map = texture_loader.load('/images/textures/abstract-gray-wall.jpg');
+  floorMat.envMap = refection_cube;
+
   floorMesh = new THREE.Mesh(floor, floorMat);
   floorMesh.receiveShadow = true;
   floorMesh.rotation.x = -Math.PI / 2.0;
   floorMesh.name = "floor";
   floorMesh.position.set(0, -0.6, 0);
+
 
   // light
   light = new THREE.PointLight(0xffffff, 2, 100);
@@ -76,6 +104,15 @@ function init() {
 
   // axesHelper
   axes = new THREE.GridHelper(100, 2);
+
+  // add camera for reflection
+  cubeRenderTarget = new THREE.WebGLCubeRenderTarget(128, {
+    format: THREE.RGBFormat,
+    generateMipmaps: true,
+    minFilter: THREE.LinearMipmapLinearFilter
+  });
+  reflectionCamera = new THREE.CubeCamera(1, 1000, cubeRenderTarget);
+  mesh.add(reflectionCamera);
 
   // add object and floor to scene
   scene.add(floorMesh);
@@ -86,6 +123,9 @@ function init() {
   renderer.shadowMap.enabled = true;
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
+
+  // add background to scene
+  scene.background = refection_cube;
 
   // stats
   stats = new Stats();
@@ -105,7 +145,6 @@ function init() {
     controls.enabled = !event.value;
   });
 
-  //afControl.attach(mesh);
   scene.add(afControl);
   window.addEventListener("resize", onWindowResize, false);
 }
@@ -128,6 +167,7 @@ function animate() {
   }
 
   renderer.render(scene, camera);
+  reflectionCamera.update(renderer, scene);
   stats.update();
 }
 
@@ -140,7 +180,7 @@ function onWindowResize() {
 
 function initGUI() {
   gui = new dat.GUI();
-  h = gui.addFolder("Common");
+  var h = gui.addFolder("Common");
   h.add(settings["common"], "scale", 0.1, 2, 0.1).name("Scale").onChange(function () {
     mesh.scale.set(
       settings["common"].scale,
@@ -168,8 +208,10 @@ function initGUI() {
     "phong shading",
     "lambert shading",
     "wire lambert",
-    "texture 1",
-    "texture 2",
+    "Wood texture 1",
+    "Wood texture 2",
+    "Concrete texture 1",
+    "Concrete texture 2",
     "choose image",
   ]).name("Material").onChange(matChanged);
 
@@ -180,6 +222,8 @@ function initGUI() {
     "torus",
     "cylinder",
     "teapot",
+    "3d_model_teapot",
+    "3d_model_tire",
   ]).name("Shape").onChange(geometryChanged);
 
   h = gui.addFolder("Light");
@@ -285,34 +329,68 @@ function lightChanged() {
 }
 
 function geometryChanged() {
-  switch (settings["geometry"].shape) {
-    case "cone":
-      geometry = new THREE.ConeBufferGeometry(0.4, 0.4, 32, 32);
-      break;
-    case "cube":
-      geometry = new THREE.BoxBufferGeometry(0.4, 0.4, 0.4);
-      break;
-    case "sphere":
-      geometry = new THREE.SphereBufferGeometry(0.4, 50, 50);
-      break;
-    case "torus":
-      geometry = new THREE.TorusBufferGeometry(0.4, 0.2, 40, 40);
-      break;
-    case "cylinder":
-      geometry = new THREE.CylinderBufferGeometry(0.4, 0.4, 0.8, 32, 32);
-      break;
-    case "teapot":
-      geometry = new THREE.TeapotBufferGeometry(
-        0.4,
-        true,
-        true,
-        true,
-        true,
-        true
-      );
-      break;
-  }
+  if (settings["geometry"].shape != "")
+    switch (settings["geometry"].shape) {
+      case "cone":
+        geometry = new THREE.ConeBufferGeometry(0.4, 0.4, 32, 32);
+        break;
+      case "cube":
+        geometry = new THREE.BoxBufferGeometry(0.4, 0.4, 0.4);
+        break;
+      case "sphere":
+        geometry = new THREE.SphereBufferGeometry(0.4, 50, 50);
+        break;
+      case "torus":
+        geometry = new THREE.TorusBufferGeometry(0.4, 0.2, 40, 40);
+        break;
+      case "cylinder":
+        geometry = new THREE.CylinderBufferGeometry(0.4, 0.4, 0.8, 32, 32);
+        break;
+      case "teapot":
+        geometry = new THREE.TeapotBufferGeometry(
+          0.4,
+          true,
+          true,
+          true,
+          true,
+          true
+        );
+        is_model_3d_in_scene = false;
+        break;
+      case "3d_model_teapot":
+        var path = 'models/teapot/scene.gltf';
+        GetGeometryFrom3DModel(path, 0.5, 0.5, 0.5);
+        return;
+      case "3d_model_tire":
+        var path = 'models/3d_vehicle_tire_base_mesh/scene.gltf';
+        geometry = GetGeometryFrom3DModel(path, 0.4, 0.4, 0.4);
+        return;
+    }
   updateMesh(geometry, material);
+}
+
+function GetGeometryFrom3DModel(path, scale_x, scale_y, scale_z) {
+  loader.load(path, function (gltf) {
+    gltf.scene.traverse(function (child, geome) {
+      if (child.isMesh) {
+
+        child.scale.set(child.scale.x * scale_x,
+          child.scale.y * scale_y,
+          child.scale.z * scale_z);
+
+        geometry = child.geometry.scale(
+          child.scale.x * scale_x,
+          child.scale.y * scale_y,
+          child.scale.z * scale_z
+        ).clone();
+
+        updateMesh(geometry, material);
+        return 0;
+      }
+    })
+  }, undefined, function (error) {
+    console.error(error);
+  });
 }
 
 function affineChanged() {
@@ -338,16 +416,17 @@ function affineChanged() {
 }
 
 function matChanged() {
+  change_material = true;
   switch (settings["geometry"].material) {
     case "basic":
       material = new THREE.MeshBasicMaterial({ color: settings["geometry"].color });
       break;
+    case "normal":
+      material = new THREE.MeshNormalMaterial();
+      break;
     case "line":
       material = new THREE.MeshNormalMaterial();
       material.wireframe = true;
-      break;
-    case "normal":
-      material = new THREE.MeshNormalMaterial();
       break;
     case "phong shading":
       material = new THREE.MeshPhongMaterial({
@@ -359,8 +438,10 @@ function matChanged() {
       break;
     case "lambert shading":
       material = new THREE.MeshLambertMaterial({
-        color: settings["geometry"].color,
         wireframe: false,
+        envMap: cubeRenderTarget.texture,
+        combine: THREE.MixOperation,
+        reflectivity: .7
       });
       break;
     case "wire lambert":
@@ -369,14 +450,14 @@ function matChanged() {
         wireframe: true,
       });
       break;
-    case "texture 1":
+    case "Wood texture 1":
       var texture = new THREE.TextureLoader().load(
-        "https://i.imgur.com/e69Z1hI.jpg",
+        "/images/textures/wood1.jpg",
         function (texture) {
           // do something with the texture
           texture.wrapS = THREE.RepeatWrapping;
           texture.wrapT = THREE.RepeatWrapping;
-          texture.repeat.set(10, 10);
+          texture.repeat.set(5, 5);
 
           material = new THREE.MeshBasicMaterial({
             map: texture,
@@ -389,9 +470,49 @@ function matChanged() {
       );
       material = new THREE.MeshBasicMaterial({ map: texture });
       break;
-    case "texture 2":
+    case "Wood texture 2":
       var texture = new THREE.TextureLoader().load(
-        "https://i.imgur.com/OIasWMD.jpg",
+        "/images/textures/wood2.jpg",
+        function (texture) {
+          // do something with the texture
+          texture.wrapS = THREE.RepeatWrapping;
+          texture.wrapT = THREE.RepeatWrapping;
+          texture.repeat.set(5, 5);
+
+          material = new THREE.MeshBasicMaterial({
+            map: texture,
+          });
+        },
+        undefined,
+        function (err) {
+          console.log(err);
+        }
+      );
+      material = new THREE.MeshBasicMaterial({ map: texture });
+      break;
+    case "Concrete texture 1":
+      var texture = new THREE.TextureLoader().load(
+        "/images/textures/concrete1.jpg",
+        function (texture) {
+          // do something with the texture
+          texture.wrapS = THREE.RepeatWrapping;
+          texture.wrapT = THREE.RepeatWrapping;
+          texture.repeat.set(1, 1);
+
+          material = new THREE.MeshBasicMaterial({
+            map: texture,
+          });
+        },
+        undefined,
+        function (err) {
+          console.log(err);
+        }
+      );
+      material = new THREE.MeshBasicMaterial({ map: texture });
+      break;
+    case "Concrete texture 2":
+      var texture = new THREE.TextureLoader().load(
+        "/images/textures/concrete2.jpg",
         function (texture) {
           // do something with the texture
           texture.wrapS = THREE.RepeatWrapping;
@@ -429,20 +550,28 @@ function clearAffine() {
 }
 
 function updateMesh(g, m) {
-  clearAffine();
-  clearGeometry();
-  mesh = new THREE.Mesh(g, m);
-  if (settings["light"].shadow == true) {
-    mesh.castShadow = true;
-    mesh.receiveShadow = false;
+  if (change_material == false) {
+    clearAffine();
+    clearGeometry();
+    mesh = new THREE.Mesh(g, m);
+    if (settings["light"].shadow == true) {
+      mesh.castShadow = true;
+      mesh.receiveShadow = false;
+    }
+    mesh.name = "object";
+    mesh.scale.set(
+      settings["common"].scale,
+      settings["common"].scale,
+      settings["common"].scale
+    );
+    console.log(mesh.position);
+    console.log(mesh.visible);
+    scene.add(mesh);
   }
-  mesh.name = "object";
-  mesh.scale.set(
-    settings["common"].scale,
-    settings["common"].scale,
-    settings["common"].scale
-  );
-  scene.add(mesh);
+  else {
+    change_material = false;
+    mesh.material = m;
+  }
 }
 
 function uploadImage() {
