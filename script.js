@@ -8,13 +8,6 @@ var stats;
 
 var change_material = false;
 
-// create a texture loader.
-const model_3d_textureLoader = new THREE.TextureLoader();
-// load a texture
-const model_3d_texture = model_3d_textureLoader.load(
-  '/models/tyrannosaurus_rex_skeleton/textures/dyno_tex_Material_u1_v1_baseColor.jpeg',
-);
-
 const loader = new GLTFLoader();
 
 // controls
@@ -32,7 +25,7 @@ var settings = {
   },
   geometry: {
     shape: "cube",
-    color: "#ffffff",
+    color: "#9b9b9b",
     material: "basic",
   },
   light: {
@@ -61,11 +54,10 @@ function init() {
   );
   camera.position.z = 2;
   scene = new THREE.Scene();
-  scene.background = new THREE.TextureLoader().load("https://i.imgur.com/MHKPi6F.jpeg");
 
   // main object
   geometry = new THREE.BoxBufferGeometry(0.4, 0.4, 0.4);
-  material = new THREE.MeshBasicMaterial({ color: "#ffffff" });
+  material = new THREE.MeshBasicMaterial({ color: settings["geometry"].color });
   mesh = new THREE.Mesh(geometry, material);
   mesh.castShadow = true;
   mesh.receiveShadow = false;
@@ -95,7 +87,6 @@ function init() {
   floorMesh.rotation.x = -Math.PI / 2.0;
   floorMesh.name = "floor";
   floorMesh.position.set(0, -0.6, 0);
-
 
   // light
   light = new THREE.PointLight(0xffffff, 2, 100);
@@ -180,7 +171,9 @@ function onWindowResize() {
 
 function initGUI() {
   gui = new dat.GUI();
+
   var h = gui.addFolder("Common");
+
   h.add(settings["common"], "scale", 0.1, 2, 0.1).name("Scale").onChange(function () {
     mesh.scale.set(
       settings["common"].scale,
@@ -188,6 +181,7 @@ function initGUI() {
       settings["common"].scale
     );
   });
+
   h.add(settings["common"], "showaxes").name("Show Axes").onChange(function () {
     if (settings["common"].showaxes == true) {
       axes.visible = true;
@@ -195,12 +189,13 @@ function initGUI() {
       axes.visible = false;
     }
   });
+
   h.add(settings["common"], "autorotate").name("Auto Rotate");
 
   h = gui.addFolder("Geometry");
-  
+
   h.addColor(settings["geometry"], 'color').name("Color").onChange(matChanged);
-  
+
   h.add(settings["geometry"], "material", [
     "basic",
     "normal",
@@ -208,10 +203,10 @@ function initGUI() {
     "phong shading",
     "lambert shading",
     "wire lambert",
-    "Wood texture 1",
-    "Wood texture 2",
-    "Concrete texture 1",
-    "Concrete texture 2",
+    "wood texture 1",
+    "wood texture 2",
+    "concrete texture 1",
+    "concrete texture 2",
     "choose image",
   ]).name("Material").onChange(matChanged);
 
@@ -227,6 +222,7 @@ function initGUI() {
   ]).name("Shape").onChange(geometryChanged);
 
   h = gui.addFolder("Light");
+
   h.add(settings["light"], "lightType", [
     "pointLight",
     "spotLight",
@@ -355,7 +351,6 @@ function geometryChanged() {
           true,
           true
         );
-        is_model_3d_in_scene = false;
         break;
       case "3d_model_teapot":
         var path = 'models/teapot/scene.gltf';
@@ -371,7 +366,7 @@ function geometryChanged() {
 
 function GetGeometryFrom3DModel(path, scale_x, scale_y, scale_z) {
   loader.load(path, function (gltf) {
-    gltf.scene.traverse(function (child, geome) {
+    gltf.scene.traverse(function (child) {
       if (child.isMesh) {
 
         child.scale.set(child.scale.x * scale_x,
@@ -450,7 +445,7 @@ function matChanged() {
         wireframe: true,
       });
       break;
-    case "Wood texture 1":
+    case "wood texture 1":
       var texture = new THREE.TextureLoader().load(
         "/images/textures/wood1.jpg",
         function (texture) {
@@ -470,7 +465,7 @@ function matChanged() {
       );
       material = new THREE.MeshBasicMaterial({ map: texture });
       break;
-    case "Wood texture 2":
+    case "wood texture 2":
       var texture = new THREE.TextureLoader().load(
         "/images/textures/wood2.jpg",
         function (texture) {
@@ -490,7 +485,7 @@ function matChanged() {
       );
       material = new THREE.MeshBasicMaterial({ map: texture });
       break;
-    case "Concrete texture 1":
+    case "concrete texture 1":
       var texture = new THREE.TextureLoader().load(
         "/images/textures/concrete1.jpg",
         function (texture) {
@@ -510,7 +505,7 @@ function matChanged() {
       );
       material = new THREE.MeshBasicMaterial({ map: texture });
       break;
-    case "Concrete texture 2":
+    case "concrete texture 2":
       var texture = new THREE.TextureLoader().load(
         "/images/textures/concrete2.jpg",
         function (texture) {
