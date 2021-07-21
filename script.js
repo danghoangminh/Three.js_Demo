@@ -39,7 +39,8 @@ var settings = {
     mode: "none",
   },
   animation: {
-    animate: false,
+    animation1: false,
+    animation2: false,
   },
 };
 
@@ -157,9 +158,9 @@ function animation1(mesh) {
   const positionKF = new THREE.VectorKeyframeTrack(
     ".position",
     [0, 1, 2],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0]
+    [0, 0, 0, 10, 0, -30, 0, 0, 0]
   );
-
+  //4 back
   // SCALE
   const scaleKF = new THREE.VectorKeyframeTrack(
     ".scale",
@@ -253,7 +254,7 @@ function animate() {
   //   }
   // }
 
-  if (settings["animation"].animate == true) {
+  if (settings["animation"].animation1 == true) {
     // mesh.rotation.x += 0.01;
     // mesh.rotation.y += 0.02;
     // mesh.rotation.z += 0.02;
@@ -279,6 +280,12 @@ function animate() {
     // console.log(mesh.geometry);
     render(mixer);
     stats.update();
+  }
+  if (settings["animation"].animation2 == true) {
+    alpha = Math.PI * 0.01 + alpha;
+    var new_x = Math.sin(alpha);
+    var new_z = Math.cos(alpha);
+    mesh.position.set(new_x, 1, new_z);
   }
   if (settings["common"].autorotate == true) {
     mesh.rotation.x += 0.01;
@@ -390,15 +397,8 @@ function initGUI() {
   ]).onChange(affineChanged);
 
   h = gui.addFolder("Animation");
-  h.add(settings["animation"], "animate");
-  //   .onChange(function () {
-  //   if (settings["animation"].animate == true) {
-  //     cameraYPosition.position.y = 1;
-  //     cameraZPosition.position.z = 100;
-  //   } else {
-  //     camera.position.z = 2;
-  //   }
-  // });
+  h.add(settings["animation"], "animation1");
+  h.add(settings["animation"], "animation2");
 }
 
 function lightChanged() {
