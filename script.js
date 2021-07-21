@@ -359,15 +359,14 @@ function geometryChanged() {
         true,
         true
       );
-      is_model_3d_in_scene = false;
       break;
     case "3d_model_teapot":
-      var path = 'models/teapot/scene.gltf';
-      GetGeometryFrom3DModel(path, 0.5, 0.5, 0.5);
+      var path = 'models/kettle_lowpoly/scene.gltf';
+      GetGeometryFrom3DModel(path, 0.2, 0.2, 0.2);
       return;
     case "3d_model_tire":
       var path = 'models/3d_vehicle_tire_base_mesh/scene.gltf';
-      geometry = GetGeometryFrom3DModel(path, 0.4, 0.4, 0.4);
+      GetGeometryFrom3DModel(path, 0.4, 0.4, 0.4);
       return;
   }
   updateMesh(geometry, material);

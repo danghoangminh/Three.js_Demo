@@ -3,74 +3,56 @@
     {
       "bufferView": 2,
       "componentType": 5126,
-      "count": 39359,
+      "count": 958,
       "max": [
-        1.4219563007354736,
-        4.0226840972900391,
-        2.0180528163909912
+        8.4300193786621094,
+        24.957004547119141,
+        8.4300203323364258
       ],
       "min": [
-        -1.421955943107605,
-        0.00069657957646995783,
-        -1.7963619232177734
+        -11.130764007568359,
+        1.0188237428665161,
+        -8.430018424987793
       ],
       "type": "VEC3"
     },
     {
       "bufferView": 2,
-      "byteOffset": 472308,
+      "byteOffset": 11496,
       "componentType": 5126,
-      "count": 39359,
+      "count": 958,
       "max": [
         1,
         1,
-        0.99999821186065674
+        1
       ],
       "min": [
-        -0.99998247623443604,
         -1,
-        -0.99999916553497314
+        -1,
+        -1
       ],
       "type": "VEC3"
     },
     {
-      "bufferView": 3,
-      "componentType": 5126,
-      "count": 39359,
-      "max": [
-        1,
-        0.71720421314239502,
-        0.99993371963500977,
-        1
-      ],
-      "min": [
-        -0.99579882621765137,
-        -0.7172166109085083,
-        -0.99900549650192261,
-        -1
-      ],
-      "type": "VEC4"
-    },
-    {
       "bufferView": 1,
       "componentType": 5126,
-      "count": 39359,
+      "count": 958,
       "max": [
-        1.6419589519500732,
-        1.1737426519393921
+        1.3093419075012207,
+        1.0058796405792236
       ],
       "min": [
-        -0.63207042217254639,
-        -0.51378124952316284
+        -0.28825479745864868,
+        -0.0051802098751068115
       ],
       "type": "VEC2"
     },
     {
       "bufferView": 0,
       "componentType": 5125,
-      "count": 231648,
+      "count": 2364,
       "max": [
-        39358
+        957
       ],
       "min": [
         0
@@ -80,50 +62,42 @@
   ],
   "asset": {
     "extras": {
-      "author": "thomasrigsby (https://sketchfab.com/thomasrigsby)",
+      "author": "icvetlan (https://sketchfab.com/icvetlan)",
       "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
-      "source": "https://sketchfab.com/3d-models/teapot-1d3405416b0f4c3f80c28dfeb85af958",
-      "title": "Teapot"
+      "source": "https://sketchfab.com/3d-models/kettle-lowpoly-8036d50783f946cfab24eb61ac09a01f",
+      "title": "Kettle_lowpoly"
     },
-    "generator": "Sketchfab-7.27.0",
+    "generator": "Sketchfab-7.81.0",
     "version": "2.0"
   },
   "bufferViews": [
     {
       "buffer": 0,
-      "byteLength": 926592,
+      "byteLength": 9456,
       "byteOffset": 0,
       "name": "floatBufferViews",
       "target": 34963
     },
     {
       "buffer": 0,
-      "byteLength": 314872,
-      "byteOffset": 926592,
+      "byteLength": 7664,
+      "byteOffset": 9456,
       "byteStride": 8,
       "name": "floatBufferViews",
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteLength": 944616,
-      "byteOffset": 1241464,
+      "byteLength": 22992,
+      "byteOffset": 17120,
       "byteStride": 12,
-      "name": "floatBufferViews",
-      "target": 34962
-    },
-    {
-      "buffer": 0,
-      "byteLength": 629744,
-      "byteOffset": 2186080,
-      "byteStride": 16,
       "name": "floatBufferViews",
       "target": 34962
     }
   ],
   "buffers": [
     {
-      "byteLength": 2815824,
+      "byteLength": 40112,
       "uri": "scene.bin"
     }
   ],
@@ -135,30 +109,30 @@
         0,
         0
       ],
-      "name": "TeaPotMaterial",
+      "name": "lambert2",
       "pbrMetallicRoughness": {
         "baseColorFactor": [
-          1,
-          1,
-          1,
+          0.5,
+          0.5,
+          0.5,
           1
         ],
         "metallicFactor": 0,
-        "roughnessFactor": 0.217391
+        "roughnessFactor": 0.59999999999999998
       }
     }
   ],
   "meshes": [
     {
+      "name": "pasted__pCylinder6_lambert2_0",
       "primitives": [
         {
           "attributes": {
             "NORMAL": 1,
             "POSITION": 0,
-            "TANGENT": 2,
-            "TEXCOORD_0": 3
+            "TEXCOORD_0": 2
           },
-          "indices": 4,
+          "indices": 3,
           "material": 0,
           "mode": 4
         }
@@ -188,59 +162,41 @@
       "children": [
         3
       ],
-      "name": "root"
+      "matrix": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        -1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "name": "938d34dbb47c40eda7ad0f1091ebf041.fbx"
     },
     {
       "children": [
         4
       ],
-      "matrix": [
-        1,
-        0,
-        0,
-        0,
-        0,
-        2.2204460492503131e-16,
-        1,
-        0,
-        0,
-        -1,
-        2.2204460492503131e-16,
-        0,
-        0,
-        0,
-        0,
-        1
-      ],
-      "name": "GLTF_SceneRootNode"
+      "name": "RootNode"
     },
     {
       "children": [
         5
       ],
-      "matrix": [
-        0.99850357781492993,
-        0,
-        0.054686425105177218,
-        0,
-        -0,
-        1,
-        0,
-        0,
-        -0.054686425105177218,
-        -0,
-        0.99850357781492993,
-        0,
-        0,
-        0,
-        0,
-        1
-      ],
-      "name": "Teapot_0"
+      "name": "pasted__pCylinder6"
     },
     {
       "mesh": 0,
-      "name": ""
+      "name": "pasted__pCylinder6_lambert2_0"
     }
   ],
   "scene": 0,
