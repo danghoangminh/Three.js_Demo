@@ -5,8 +5,9 @@ var gui;
 var stats;
 
 // controls
-var obControl, afControl;
-
+var controls, obControl, afControl;
+//animate
+var mixer;
 // rotation values
 var rot_x = 0.01;
 var rot_y = 0.02;
@@ -44,7 +45,7 @@ var settings = {
 
 init();
 initGUI();
-animate(clock);
+animate();
 
 function init() {
   camera = new THREE.PerspectiveCamera(
@@ -54,35 +55,37 @@ function init() {
     1000
   );
 
-  // var cameraZRotation = new THREE.Group();
-  // var cameraYPosition = new THREE.Group();
-  // var cameraZPosition = new THREE.Group();
-  // var cameraXRotation = new THREE.Group();
-  // var cameraYRotation = new THREE.Group();
+  var cameraZRotation = new THREE.Group();
+  var cameraYPosition = new THREE.Group();
+  var cameraZPosition = new THREE.Group();
+  var cameraXRotation = new THREE.Group();
+  var cameraYRotation = new THREE.Group();
 
-  // cameraZRotation.name = "cameraZRotation";
-  // cameraYPosition.name = "cameraYPosition";
-  // cameraZPosition.name = "cameraZPosition";
-  // cameraXRotation.name = "cameraXRotation";
-  // cameraYRotation.name = "cameraYRotation";
+  cameraZRotation.name = "cameraZRotation";
+  cameraYPosition.name = "cameraYPosition";
+  cameraZPosition.name = "cameraZPosition";
+  cameraXRotation.name = "cameraXRotation";
+  cameraYRotation.name = "cameraYRotation";
 
-  // cameraYPosition.add(camera);
-  // cameraZPosition.add(cameraYPosition);
-  // cameraXRotation.add(cameraZPosition);
-  // cameraYRotation.add(cameraXRotation);
+  cameraYPosition.add(camera);
+  cameraZPosition.add(cameraYPosition);
+  cameraXRotation.add(cameraZPosition);
+  cameraYRotation.add(cameraXRotation);
 
   camera.position.z = 2;
   scene = new THREE.Scene();
-  // scene.add(cameraYRotation);
+  scene.add(cameraYRotation);
 
-  // gui = new dat.GUI();
-  // gui.add(cameraZPosition.position, "z", 0, 100);
-  // gui.add(cameraYRotation.rotation, "y", -Math.PI, Math.PI);
-  // gui.add(cameraXRotation.rotation, "x", -Math.PI, Math.PI);
-  // gui.add(cameraZRotation.rotation, "z", -Math.PI, Math.PI);
+  gui = new dat.GUI();
+  gui.add(cameraZPosition.position, "z", 0, 100);
+  gui.add(cameraYRotation.rotation, "y", -Math.PI, Math.PI);
+  gui.add(cameraXRotation.rotation, "x", -Math.PI, Math.PI);
+  gui.add(cameraZRotation.rotation, "z", -Math.PI, Math.PI);
 
   // main object
   geometry = new THREE.BoxBufferGeometry(0.4, 0.4, 0.4);
+  // geometry = new THREE.TeapotBufferGeometry(0.4, 50, 50);
+
   material = new THREE.MeshBasicMaterial({ color: 0xffffff });
   mesh = new THREE.Mesh(geometry, material);
   mesh.castShadow = true;
@@ -120,7 +123,7 @@ function init() {
   stats = new Stats();
   document.body.appendChild(stats.dom);
   // controls
-  var controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls = new THREE.OrbitControls(camera, renderer.domElement);
   controls.maxPolarAngle = Math.PI * 1;
   controls.minDistance = 1;
   controls.maxDistance = 10;
@@ -133,14 +136,106 @@ function init() {
     controls.enabled = !event.value;
   });
 
+  // animation
+  mixer = animation1(mesh);
   //afControl.attach(mesh);
   scene.add(afControl);
   window.addEventListener("resize", onWindowResize, false);
 }
 
-function animate(clock) {
+function render(mixer) {
+  const delta = clock.getDelta();
+
+  if (mixer) {
+    mixer.update(delta);
+  }
+
+  renderer.render(scene, camera);
+}
+///////////////////////////////////////////////
+function animation1(mesh) {
+  const positionKF = new THREE.VectorKeyframeTrack(
+    ".position",
+    [0, 1, 2],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0]
+  );
+
+  // SCALE
+  const scaleKF = new THREE.VectorKeyframeTrack(
+    ".scale",
+    [0, 1, 2],
+    [1, 1, 1, 2, 2, 2, 1, 1, 1]
+  );
+
+  // ROTATION
+  // Rotation should be performed using quaternions, using a THREE.QuaternionKeyframeTrack
+  // Interpolating Euler angles (.rotation property) can be problematic and is currently not supported
+
+  // set up rotation about x axis
+  const xAxis = new THREE.Vector3(1, 0, 0);
+
+  const qInitial = new THREE.Quaternion().setFromAxisAngle(xAxis, 0);
+  const qFinal = new THREE.Quaternion().setFromAxisAngle(xAxis, Math.PI);
+  const quaternionKF = new THREE.QuaternionKeyframeTrack(
+    ".quaternion",
+    [0, 1, 2],
+    [
+      qInitial.x,
+      qInitial.y,
+      qInitial.z,
+      qInitial.w,
+      qFinal.x,
+      qFinal.y,
+      qFinal.z,
+      qFinal.w,
+      qInitial.x,
+      qInitial.y,
+      qInitial.z,
+      qInitial.w,
+    ]
+  );
+
+  // COLOR
+  const colorKF = new THREE.ColorKeyframeTrack(
+    ".material.color",
+    [0, 1, 2],
+    [1, 0, 0, 0, 1, 0, 0, 0, 1],
+    THREE.InterpolateDiscrete
+  );
+
+  // OPACITY
+  const opacityKF = new THREE.NumberKeyframeTrack(
+    ".material.opacity",
+    [0, 1, 2],
+    [1, 0, 1]
+  );
+
+  // create an animation sequence with the tracks
+  // If a negative time value is passed, the duration will be calculated from the times of the passed tracks array
+  const clip = new THREE.AnimationClip("Action", 3, [
+    scaleKF,
+    positionKF,
+    quaternionKF,
+    colorKF,
+    opacityKF,
+  ]);
+
+  // setup the THREE.AnimationMixer
+  mixer = new THREE.AnimationMixer(mesh);
+
+  // create a ClipAction and set it to play
+  const clipAction = mixer.clipAction(clip);
+  clipAction.play();
+
+  //
+  clock = new THREE.Clock();
+  return mixer;
+}
+//////////////////////////////////////////////
+function animate() {
   requestAnimationFrame(animate);
 
+  var cameraYRotation = scene.getObjectByName("cameraYRotation");
   // var cameraXRotation = scene.getObjectByName("cameraXRotation");
   // var cameraYPosition = scene.getObjectByName("cameraYPosition");
   // var cameraZPosition = scene.getObjectByName("cameraZPosition");
@@ -169,15 +264,21 @@ function animate(clock) {
     // mesh.position.y = Math.abs(Math.sin(timer * 0.002)) * 150;
     // mesh.rotation.x = timer * 0.0003;
     // mesh.rotation.z = timer * 0.0002;
-
     // var timeElapsed = clock.getElapsedTime();
-
-    if (mesh.position.y <= 0.5) {
-      mesh.scale.y += 0.01;
-      mesh.position.y += 0.01;
-    } else {
-      if (mesh.scale.x < 1002) mesh.scale.x += 0.01;
-    }
+    // if (mesh.position.y <= 0.5) {
+    //   mesh.scale.y += 0.01;
+    //   mesh.position.y += 0.01;
+    // } else {
+    //   if (mesh.scale.x < 1002) mesh.scale.x += 0.01;
+    // }
+    // alpha = Math.PI * 0.01 + alpha;
+    // var new_x = Math.sin(alpha);
+    // var new_z = Math.cos(alpha);
+    // mesh.position.set(new_x, 1, new_z);
+    // if (alpha == 2 * Math.PI) alpha = 0;
+    // console.log(mesh.geometry);
+    render(mixer);
+    stats.update();
   }
   if (settings["common"].autorotate == true) {
     mesh.rotation.x += 0.01;
@@ -233,6 +334,7 @@ function initGUI() {
     "phong shading",
     "lambert shading",
     "wire lambert",
+    "select",
   ]).onChange(matChanged);
   h.add(settings["geometry"], "shape", [
     "cube",
@@ -496,6 +598,8 @@ function matChanged() {
       );
       material = new THREE.MeshBasicMaterial({ map: texture });
       break;
+    case "select":
+      alert("file-input");
   }
   updateMesh(geometry, material);
 }
@@ -527,6 +631,7 @@ function updateMesh(g, m) {
     settings["common"].scale
   );
   scene.add(mesh);
+  mixer = animation1(mesh);
 }
 
 function genDotMaterial() {
