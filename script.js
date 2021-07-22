@@ -1,4 +1,4 @@
-import {GLTFLoader} from 'https://threejsfundamentals.org/threejs/resources/threejs/r127/examples/jsm/loaders/GLTFLoader.js';
+import { GLTFLoader } from 'https://threejsfundamentals.org/threejs/resources/threejs/r127/examples/jsm/loaders/GLTFLoader.js';
 
 // global variables
 var camera, scene, renderer, reflectionCamera, cubeRenderTarget;
@@ -7,16 +7,13 @@ var gui;
 var stats;
 
 var change_material = false;
-var model_3d;
 
 const loader = new GLTFLoader();
 
 // controls
-var obControl, afControl;
+var afControl;
 
 // rotation values
-var rot_x = 0.01;
-var rot_y = 0.02;
 var alpha = 0;
 
 // gui settings
@@ -27,11 +24,11 @@ var settings = {
     showaxes: true,
   },
   geometry: {
-    shape: "cube",
-    material: "basic",
+    shape: "Cube",
+    material: "Basic",
   },
   light: {
-    lightType: "pointLight",
+    lightType: "Point light",
     enable: true,
     autorotate: false,
     shadow: true,
@@ -39,7 +36,7 @@ var settings = {
     intensity: 4,
   },
   affine: {
-    mode: "none",
+    mode: "None",
   },
 };
 
@@ -78,10 +75,10 @@ function init() {
 
   // floor
   floor = new THREE.PlaneBufferGeometry(5, 5, 32, 32);
-  
+
   var floorMat = new THREE.MeshStandardMaterial({ color: 0x222222, side: THREE.DoubleSide });
   var texture_loader = new THREE.TextureLoader();
-  floorMat.map = texture_loader.load('/images/textures/abstract-gray-wall.jpg');
+  floorMat.map = texture_loader.load('/images/textures/floor.jpg');
   floorMat.envMap = refection_cube;
 
   floorMesh = new THREE.Mesh(floor, floorMat);
@@ -100,11 +97,11 @@ function init() {
   axes = new THREE.GridHelper(100, 2);
 
   // add camera for reflection
-  cubeRenderTarget = new THREE.WebGLCubeRenderTarget( 128,{ 
+  cubeRenderTarget = new THREE.WebGLCubeRenderTarget(128, {
     format: THREE.RGBFormat,
     generateMipmaps: true,
     minFilter: THREE.LinearMipmapLinearFilter
-  } );
+  });
   reflectionCamera = new THREE.CubeCamera(1, 1000, cubeRenderTarget);
   mesh.add(reflectionCamera);
 
@@ -162,7 +159,7 @@ function animate() {
   }
 
   renderer.render(scene, camera);
-  reflectionCamera.update( renderer, scene );
+  reflectionCamera.update(renderer, scene);
   stats.update();
 }
 
@@ -293,7 +290,7 @@ function lightChanged() {
         scene.add(light);
       }
       break;
-    case "Directiona light":
+    case "Directional light":
       if (settings["light"].enable === false) light.visible = false;
       else {
         //reset all effect of light
@@ -324,93 +321,68 @@ function lightChanged() {
 
 function geometryChanged() {
   if (settings["geometry"].shape != "")
-  switch (settings["geometry"].shape) {
-    case "Cone":
-      geometry = new THREE.ConeBufferGeometry(0.4, 0.4, 32, 32);
-      break;
-    case "Cube":
-      geometry = new THREE.BoxBufferGeometry(0.4, 0.4, 0.4);
-      break;
-    case "Sphere":
-      geometry = new THREE.SphereBufferGeometry(0.4, 50, 50);
-      break;
-    case "Torus":
-      geometry = new THREE.TorusBufferGeometry(0.4, 0.2, 40, 40);
-      break;
-    case "Cylinder":
-      geometry = new THREE.CylinderBufferGeometry(0.4, 0.4, 0.8, 32, 32);
-      break;
-    case "Teapot":
-      var path = 'models/kettle_lowpoly/scene.gltf';
-      GetGeometryFrom3DModel(path, 0.2, 0.2, 0.2);
-      return;
-    case "Tire":
-      var path = 'models/3d_vehicle_tire_base_mesh/scene.gltf';
-      GetGeometryFrom3DModel(path, 0.4, 0.4, 0.4);
-      return;
-    case "Pencil":
-    var path = 'models/hexagon_pencil/scene.gltf';
-    GetGeometryFrom3DModel(path, 0.2, 0.2, 0.2);
-    return;
-    case "Pencil holder":
-    var path = 'models/pencil_holder/scene.gltf';
-    GetGeometryFrom3DModel(path, 0.4, 0.4, 0.4);
-    return;
-    case "Paper plane":
-    var path = 'models/paper_plane/scene.gltf';
-    GetGeometryFrom3DModel(path, 0.5, 0.5, 0.5);
-    return;
-  }
+    switch (settings["geometry"].shape) {
+      case "Cone":
+        geometry = new THREE.ConeBufferGeometry(0.4, 0.4, 32, 32);
+        break;
+      case "Cube":
+        geometry = new THREE.BoxBufferGeometry(0.4, 0.4, 0.4);
+        break;
+      case "Sphere":
+        geometry = new THREE.SphereBufferGeometry(0.4, 50, 50);
+        break;
+      case "Torus":
+        geometry = new THREE.TorusBufferGeometry(0.4, 0.2, 40, 40);
+        break;
+      case "Cylinder":
+        geometry = new THREE.CylinderBufferGeometry(0.4, 0.4, 0.8, 32, 32);
+        break;
+      case "Teapot":
+        var path = 'models/kettle_lowpoly/scene.gltf';
+        GetGeometryFrom3DModel(path, 0.2, 0.2, 0.2);
+        return;
+      case "Tire":
+        var path = 'models/3d_vehicle_tire_base_mesh/scene.gltf';
+        GetGeometryFrom3DModel(path, 0.4, 0.4, 0.4);
+        return;
+      case "Pencil":
+        var path = 'models/hexagon_pencil/scene.gltf';
+        GetGeometryFrom3DModel(path, 0.2, 0.2, 0.2);
+        return;
+      case "Pencil holder":
+        var path = 'models/pencil_holder/scene.gltf';
+        GetGeometryFrom3DModel(path, 0.4, 0.4, 0.4);
+        return;
+      case "Paper plane":
+        var path = 'models/paper_plane/scene.gltf';
+        GetGeometryFrom3DModel(path, 0.5, 0.5, 0.5);
+        return;
+    }
   updateMesh(geometry, material);
 }
 
-// function GetGeometryFrom3DModel(path, scale_x, scale_y, scale_z) {
-//     loader.load(path, function ( gltf ) {
-      
-//       // gltf.scene.traverse(function(child) {
-//       //   if(child.isMesh) {
-//       //     console.log(child.name);
-//       //     // child.material = new THREE.MeshPhongMaterial({color: 0xff00ff});
-//       //   }
-//       // })
-
-//       is_model_3d_in_scene = true;
-//       model_3d = gltf.scene;
-
-//       // console.log(model_3d.position);
-
-//       model_3d.scale.x = model_3d.scale.x * scale_x;
-//       model_3d.scale.y = model_3d.scale.y * scale_y;
-//       model_3d.scale.z = model_3d.scale.z * scale_z;
-
-//       scene.add( model_3d );   
-//     }, undefined, function ( error ) {
-//       reject(error);
-//     } );
-// }
-
 function GetGeometryFrom3DModel(path, scale_x, scale_y, scale_z) {
-	loader.load(path, function ( gltf ) {
-		gltf.scene.traverse(function(child, geome) {
-			if(child.isMesh){
+  loader.load(path, function (gltf) {
+    gltf.scene.traverse(function (child) {
+      if (child.isMesh) {
 
-				child.scale.set(child.scale.x * scale_x,
-								child.scale.y * scale_y,
-								child.scale.z * scale_z);
+        child.scale.set(child.scale.x * scale_x,
+          child.scale.y * scale_y,
+          child.scale.z * scale_z);
 
         geometry = child.geometry.scale(
-                child.scale.x * scale_x,
-								child.scale.y * scale_y,
-								child.scale.z * scale_z
+          child.scale.x * scale_x,
+          child.scale.y * scale_y,
+          child.scale.z * scale_z
         ).clone();
-      
+
         updateMesh(geometry, material);
         return 0;
-			}
-		})
-	}, undefined, function ( error ) {
-		console.error( error );
-	} );
+      }
+    })
+  }, undefined, function (error) {
+    console.error(error);
+  });
 }
 
 function affineChanged() {
@@ -460,8 +432,8 @@ function matChanged() {
       material = new THREE.MeshLambertMaterial({
         // color: 0xb00000,
         wireframe: false,
-        envMap: cubeRenderTarget.texture,      
-        combine: THREE.MixOperation,     
+        envMap: cubeRenderTarget.texture,
+        combine: THREE.MixOperation,
         reflectivity: .7
       });
       break;
@@ -473,7 +445,7 @@ function matChanged() {
       break;
     case "Wood texture 1":
       var texture = new THREE.TextureLoader().load(
-        "/images/textures/e69Z1hI.jpg",
+        "/images/textures/Wood_1.jpg",
         function (texture) {
           // do something with the texture
           texture.wrapS = THREE.RepeatWrapping;
@@ -493,7 +465,7 @@ function matChanged() {
       break;
     case "Wood texture 2":
       var texture = new THREE.TextureLoader().load(
-        "/images/textures/OIasWMD.jpg",
+        "/images/textures/Wood_2.jpg",
         function (texture) {
           // do something with the texture
           texture.wrapS = THREE.RepeatWrapping;
@@ -511,9 +483,9 @@ function matChanged() {
       );
       material = new THREE.MeshBasicMaterial({ map: texture });
       break;
-      case "Concrete texture 1":
+    case "Concrete texture 1":
       var texture = new THREE.TextureLoader().load(
-        "/images/textures/annie-spratt-osuiatBDTww-unsplash.jpg",
+        "/images/textures/Concrete_1.jpg",
         function (texture) {
           // do something with the texture
           texture.wrapS = THREE.RepeatWrapping;
@@ -531,9 +503,9 @@ function matChanged() {
       );
       material = new THREE.MeshBasicMaterial({ map: texture });
       break;
-      case "Concrete texture 2":
+    case "Concrete texture 2":
       var texture = new THREE.TextureLoader().load(
-        "/images/textures/nick-iliasov-i0fCUofGjV8-unsplash.jpg",
+        "/images/textures/Concrete_2.jpg",
         function (texture) {
           // do something with the texture
           texture.wrapS = THREE.RepeatWrapping;
@@ -558,14 +530,6 @@ function matChanged() {
   updateMesh(geometry, material);
 }
 
-function reApplyTexture() {
-  model_3d.traverse(function(child){
-    if(child.isMesh) {
-      child.material = model_3d_material;
-    }
-  })
-}
-
 /* utilities */
 function clearGeometry() {
   for (var i = 0; i < scene.children.length; i++) {
@@ -579,7 +543,7 @@ function clearAffine() {
 }
 
 function updateMesh(g, m) {
-  if(change_material == false) {
+  if (change_material == false) {
     clearAffine();
     clearGeometry();
     mesh = new THREE.Mesh(g, m);
@@ -597,59 +561,12 @@ function updateMesh(g, m) {
     console.log(mesh.visible);
     scene.add(mesh);
   }
-  else{
+  else {
     change_material = false;
     mesh.material = m;
   }
 }
 
-function genDotMaterial() {
-  var canvas = document.createElement("canvas");
-  canvas.width = 64;
-  canvas.height = 64;
-
-  var ctx = canvas.getContext("2d");
-  ctx.beginPath();
-  ctx.arc(16, 16, 12, 0, 2 * Math.PI);
-  ctx.stroke();
-
-  var texture = THREE.CanvasTexture(canvas);
-  var mat = new THREE.MeshBasicMaterial({
-    map: texture,
-  });
-  return mat;
-}
-
 function uploadImage() {
   console.log("clicked");
-}
-
-function initDragAndDrop() {
-  document.addEventListener(
-    "dragover",
-    function (event) {
-      event.preventDefault();
-      event.dataTransfer.dropEffect = "copy";
-    },
-    false
-  );
-
-  document.addEventListener(
-    "drop",
-    function (event) {
-      event.preventDefault();
-
-      // load file
-      var reader = new FileReader();
-      reader.addEventListener(
-        "load",
-        function (ev) {
-          handleJPG(ev);
-        },
-        false
-      );
-      reader.readAsDataURL(event.dataTransfer.files[0]);
-    },
-    false
-  );
 }
