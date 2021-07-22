@@ -1,0 +1,11 @@
+Model Information:
+* title:	Wizard hat from Poly by Google
+* source:	https://sketchfab.com/3d-models/wizard-hat-from-poly-by-google-a934ad7297af4081a28c6d6362ad8784
+* author:	IronEqual (https://sketchfab.com/ie-niels)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Wizard hat from Poly by Google" (https://sketchfab.com/3d-models/wizard-hat-from-poly-by-google-a934ad7297af4081a28c6d6362ad8784) by IronEqual (https://sketchfab.com/ie-niels) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

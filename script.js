@@ -9,18 +9,6 @@ var stats;
 var change_material = false;
 var model_3d;
 
-// create a texture loader.
-const model_3d_textureLoader = new THREE.TextureLoader();
-// load a texture
-const model_3d_texture = model_3d_textureLoader.load(
-  '/models/tyrannosaurus_rex_skeleton/textures/dyno_tex_Material_u1_v1_baseColor.jpeg',
-);
-// create a "standard" material using
-const model_3d_material = new THREE.MeshStandardMaterial({
-  map: model_3d_texture,
-});
-
-
 const loader = new GLTFLoader();
 
 // controls
@@ -206,36 +194,38 @@ function initGUI() {
 
   h = gui.addFolder("Geometry");
   h.add(settings["geometry"], "material", [
-    "basic",
-    "normal",
-    "line",
-    "phong shading",
-    "lambert shading",
-    "wire lambert",
+    "Basic",
+    "Normal",
+    "Line",
+    "Phong shading",
+    "Lambert shading",
+    "Wire lambert",
     "Wood texture 1",
     "Wood texture 2",
     "Concrete texture 1",
     "Concrete texture 2",
-    "choose image",
+    "Choose image",
   ]).name("Material").onChange(matChanged);
 
   h.add(settings["geometry"], "shape", [
-    "cube",
-    "cone",
-    "sphere",
-    "torus",
-    "cylinder",
-    "teapot",
-    "3d_model_teapot",
-    "3d_model_tire",
+    "Cube",
+    "Cone",
+    "Sphere",
+    "Torus",
+    "Cylinder",
+    "Teapot",
+    "Tire",
+    "Pencil",
+    "Pencil holder",
+    "Paper plane",
   ]).name("Shape").onChange(geometryChanged);
 
   h = gui.addFolder("Light");
   h.add(settings["light"], "lightType", [
-    "pointLight",
-    "spotLight",
-    "directionalLight",
-    "ambientLight",
+    "Point light",
+    "Spot light",
+    "Directional light",
+    "Ambient light",
   ]).name("Light Type").onChange(lightChanged);
 
   h.add(settings["light"], "enable").name("Enable").onChange(function () {
@@ -268,16 +258,16 @@ function initGUI() {
 
   h = gui.addFolder("Affine");
   h.add(settings["affine"], "mode", [
-    "none",
-    "translate",
-    "rotate",
-    "scale",
+    "None",
+    "Translate",
+    "Rotate",
+    "Scale",
   ]).name("Mode").onChange(affineChanged);
 }
 
 function lightChanged() {
   switch (settings["light"].lightType) {
-    case "spotLight":
+    case "Spot light":
       if (settings["light"].enable === false) light.visible = false;
       else {
         light.visible = false;
@@ -290,7 +280,7 @@ function lightChanged() {
         scene.add(light);
       }
       break;
-    case "pointLight":
+    case "Point light":
       if (settings["light"].enable === false) light.visible = false;
       else {
         light.visible = false;
@@ -303,7 +293,7 @@ function lightChanged() {
         scene.add(light);
       }
       break;
-    case "directionalLight":
+    case "Directiona light":
       if (settings["light"].enable === false) light.visible = false;
       else {
         //reset all effect of light
@@ -317,7 +307,7 @@ function lightChanged() {
         scene.add(light);
       }
       break;
-    case "ambientLight":
+    case "Ambient light":
       if (settings["light"].enable === false) light.visible = false;
       else {
         light.visible = false;
@@ -335,39 +325,41 @@ function lightChanged() {
 function geometryChanged() {
   if (settings["geometry"].shape != "")
   switch (settings["geometry"].shape) {
-    case "cone":
+    case "Cone":
       geometry = new THREE.ConeBufferGeometry(0.4, 0.4, 32, 32);
       break;
-    case "cube":
+    case "Cube":
       geometry = new THREE.BoxBufferGeometry(0.4, 0.4, 0.4);
       break;
-    case "sphere":
+    case "Sphere":
       geometry = new THREE.SphereBufferGeometry(0.4, 50, 50);
       break;
-    case "torus":
+    case "Torus":
       geometry = new THREE.TorusBufferGeometry(0.4, 0.2, 40, 40);
       break;
-    case "cylinder":
+    case "Cylinder":
       geometry = new THREE.CylinderBufferGeometry(0.4, 0.4, 0.8, 32, 32);
       break;
-    case "teapot":
-      geometry = new THREE.TeapotBufferGeometry(
-        0.4,
-        true,
-        true,
-        true,
-        true,
-        true
-      );
-      break;
-    case "3d_model_teapot":
+    case "Teapot":
       var path = 'models/kettle_lowpoly/scene.gltf';
       GetGeometryFrom3DModel(path, 0.2, 0.2, 0.2);
       return;
-    case "3d_model_tire":
+    case "Tire":
       var path = 'models/3d_vehicle_tire_base_mesh/scene.gltf';
       GetGeometryFrom3DModel(path, 0.4, 0.4, 0.4);
       return;
+    case "Pencil":
+    var path = 'models/hexagon_pencil/scene.gltf';
+    GetGeometryFrom3DModel(path, 0.2, 0.2, 0.2);
+    return;
+    case "Pencil holder":
+    var path = 'models/pencil_holder/scene.gltf';
+    GetGeometryFrom3DModel(path, 0.4, 0.4, 0.4);
+    return;
+    case "Paper plane":
+    var path = 'models/paper_plane/scene.gltf';
+    GetGeometryFrom3DModel(path, 0.5, 0.5, 0.5);
+    return;
   }
   updateMesh(geometry, material);
 }
@@ -423,20 +415,20 @@ function GetGeometryFrom3DModel(path, scale_x, scale_y, scale_z) {
 
 function affineChanged() {
   switch (settings["affine"].mode) {
-    case "none":
+    case "None":
       console.log("detached");
       afControl.detach();
       break;
-    case "translate":
+    case "Translate":
       console.log("translating");
       afControl.setMode("translate");
       afControl.attach(mesh);
       break;
-    case "rotate":
+    case "Rotate":
       afControl.setMode("rotate");
       afControl.attach(mesh);
       break;
-    case "scale":
+    case "Scale":
       afControl.setMode("scale");
       afControl.attach(mesh);
       break;
@@ -446,17 +438,17 @@ function affineChanged() {
 function matChanged() {
   change_material = true;
   switch (settings["geometry"].material) {
-    case "basic":
+    case "Basic":
       material = new THREE.MeshBasicMaterial({ color: 0xffffff });
       break;
-    case "line":
+    case "Line":
       material = new THREE.MeshNormalMaterial();
       material.wireframe = true;
       break;
-    case "normal":
+    case "Normal":
       material = new THREE.MeshNormalMaterial();
       break;
-    case "phong shading":
+    case "Phong shading":
       material = new THREE.MeshPhongMaterial({
         color: 0xdddddd,
         specular: 0x009900,
@@ -464,7 +456,7 @@ function matChanged() {
         flatShading: true,
       });
       break;
-    case "lambert shading":
+    case "Lambert shading":
       material = new THREE.MeshLambertMaterial({
         // color: 0xb00000,
         wireframe: false,
@@ -473,7 +465,7 @@ function matChanged() {
         reflectivity: .7
       });
       break;
-    case "wire lambert":
+    case "Wire lambert":
       material = new THREE.MeshLambertMaterial({
         color: 0xb00000,
         wireframe: true,
@@ -559,7 +551,7 @@ function matChanged() {
       );
       material = new THREE.MeshBasicMaterial({ map: texture });
       break;
-    case "choose image":
+    case "Choose image":
       uploadImage();
       break;
   }
