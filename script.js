@@ -3,7 +3,7 @@ var camera, scene, renderer;
 var floor, geometry, material, mesh, floorMesh, light, axes;
 var gui;
 var stats;
-
+var name;
 // controls
 var controls, obControl, afControl;
 //animate
@@ -56,32 +56,8 @@ function init() {
     1000
   );
 
-  var cameraZRotation = new THREE.Group();
-  var cameraYPosition = new THREE.Group();
-  var cameraZPosition = new THREE.Group();
-  var cameraXRotation = new THREE.Group();
-  var cameraYRotation = new THREE.Group();
-
-  cameraZRotation.name = "cameraZRotation";
-  cameraYPosition.name = "cameraYPosition";
-  cameraZPosition.name = "cameraZPosition";
-  cameraXRotation.name = "cameraXRotation";
-  cameraYRotation.name = "cameraYRotation";
-
-  cameraYPosition.add(camera);
-  cameraZPosition.add(cameraYPosition);
-  cameraXRotation.add(cameraZPosition);
-  cameraYRotation.add(cameraXRotation);
-
   camera.position.z = 2;
   scene = new THREE.Scene();
-  scene.add(cameraYRotation);
-
-  gui = new dat.GUI();
-  gui.add(cameraZPosition.position, "z", 0, 100);
-  gui.add(cameraYRotation.rotation, "y", -Math.PI, Math.PI);
-  gui.add(cameraXRotation.rotation, "x", -Math.PI, Math.PI);
-  gui.add(cameraZRotation.rotation, "z", -Math.PI, Math.PI);
 
   // main object
   geometry = new THREE.BoxBufferGeometry(0.4, 0.4, 0.4);
@@ -138,7 +114,7 @@ function init() {
   });
 
   // animation
-  mixer = animation1(mesh);
+  mixer = animation2(mesh);
   //afControl.attach(mesh);
   scene.add(afControl);
   window.addEventListener("resize", onWindowResize, false);
@@ -154,11 +130,11 @@ function render(mixer) {
   renderer.render(scene, camera);
 }
 ///////////////////////////////////////////////
-function animation1(mesh) {
+function animation2(mesh) {
   const positionKF = new THREE.VectorKeyframeTrack(
     ".position",
     [0, 1, 2],
-    [0, 0, 0, 10, 0, -30, 0, 0, 0]
+    [0, 0, 0, 0, 0, -30, 0, 0, 0]
   );
   //4 back
   // SCALE
@@ -236,52 +212,11 @@ function animation1(mesh) {
 function animate() {
   requestAnimationFrame(animate);
 
-  var cameraYRotation = scene.getObjectByName("cameraYRotation");
-  // var cameraXRotation = scene.getObjectByName("cameraXRotation");
-  // var cameraYPosition = scene.getObjectByName("cameraYPosition");
-  // var cameraZPosition = scene.getObjectByName("cameraZPosition");
-
-  // if (settings["animation"].animate == true) {
-  //   cameraXRotation.rotation.x = Math.PI / 2;
-
-  //   if (cameraXRotation.rotation.x > 0) {
-  //     cameraXRotation.rotation.x -= 0.01;
-  //     console.log("1");
-  //   }
-
-  //   if (cameraZPosition.position.z >= 3) {
-  //     cameraZPosition.position.z -= 0.25;
-  //   }
-  // }
-
-  if (settings["animation"].animation1 == true) {
-    // mesh.rotation.x += 0.01;
-    // mesh.rotation.y += 0.02;
-    // mesh.rotation.z += 0.02;
-    // mesh.scale.x += 0.01;
-    // mesh.scale.y += 0.01;
-    // mesh.scale.z += 0.01;
-    // const timer = Date.now() - start;
-    // mesh.position.y = Math.abs(Math.sin(timer * 0.002)) * 150;
-    // mesh.rotation.x = timer * 0.0003;
-    // mesh.rotation.z = timer * 0.0002;
-    // var timeElapsed = clock.getElapsedTime();
-    // if (mesh.position.y <= 0.5) {
-    //   mesh.scale.y += 0.01;
-    //   mesh.position.y += 0.01;
-    // } else {
-    //   if (mesh.scale.x < 1002) mesh.scale.x += 0.01;
-    // }
-    // alpha = Math.PI * 0.01 + alpha;
-    // var new_x = Math.sin(alpha);
-    // var new_z = Math.cos(alpha);
-    // mesh.position.set(new_x, 1, new_z);
-    // if (alpha == 2 * Math.PI) alpha = 0;
-    // console.log(mesh.geometry);
+  if (settings["animation"].animation2 == true) {
     render(mixer);
     stats.update();
   }
-  if (settings["animation"].animation2 == true) {
+  if (settings["animation"].animation1 == true) {
     alpha = Math.PI * 0.01 + alpha;
     var new_x = Math.sin(alpha);
     var new_z = Math.cos(alpha);
@@ -332,6 +267,7 @@ function initGUI() {
   h.add(settings["common"], "autorotate");
 
   h = gui.addFolder("Geometry");
+
   h.add(settings["geometry"], "material", [
     "basic",
     "normal",
@@ -598,9 +534,8 @@ function matChanged() {
       );
       material = new THREE.MeshBasicMaterial({ map: texture });
       break;
-    case "select":
-      alert("file-input");
   }
+
   updateMesh(geometry, material);
 }
 
@@ -631,7 +566,7 @@ function updateMesh(g, m) {
     settings["common"].scale
   );
   scene.add(mesh);
-  mixer = animation1(mesh);
+  mixer = animation2(mesh);
 }
 
 function genDotMaterial() {
