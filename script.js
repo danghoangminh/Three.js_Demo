@@ -35,6 +35,9 @@ var settings = {
     autorotate: false,
     shadow: true,
     automove: false,
+    positionX: 0,
+    positionY: 1,
+    positionZ: 0,
     intensity: 4,
   },
   affine: {
@@ -328,6 +331,16 @@ function initGUI() {
       light.castShadow = true;
       mesh.castShadow = true;
     }
+  });
+
+  h.add(settings["light"], "positionX", -10, 10).onChange(function () {
+    light.position.x = settings["light"].positionX;
+  });
+  h.add(settings["light"], "positionY", -10, 10).onChange(function () {
+    light.position.y = settings["light"].positionY;
+  });
+  h.add(settings["light"], "positionZ", -10, 10).onChange(function () {
+    light.position.z = settings["light"].positionZ;
   });
 
   h.add(settings["light"], "intensity", 0, 50, 2).onChange(function () {
