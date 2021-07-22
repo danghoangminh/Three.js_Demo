@@ -26,7 +26,7 @@ var settings = {
   geometry: {
     shape: "Cube",
     color: "#9b9b9b",
-    material: "basic",
+    material: "Basic",
   },
   light: {
     lightType: "Point light",
