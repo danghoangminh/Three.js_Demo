@@ -1,0 +1,14 @@
+3d_vehicle_tire_base_mesh:
+https://sketchfab.com/3d-models/3d-vehicle-tire-base-mesh-f9e6ed3459e24ab181ef8c89b3eb753d
+
+hexagon_pencil:
+https://sketchfab.com/3d-models/hexagon-pencil-b643b60b7bc74e58a205eda049dc2a91
+
+kettle_lowpoly:
+https://sketchfab.com/3d-models/kettle-lowpoly-8036d50783f946cfab24eb61ac09a01f
+
+paper_plane:
+https://sketchfab.com/3d-models/paper-plane-77a7e55aa20f4b6594ca385c7dcbeeaf
+
+pencil_holder:
+https://sketchfab.com/3d-models/pencil-holder-69b8f5e8171b4f9f84b3951ee3cafe74

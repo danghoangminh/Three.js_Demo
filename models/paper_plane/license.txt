@@ -1,0 +1,11 @@
+Model Information:
+* title:	Paper Plane
+* source:	https://sketchfab.com/3d-models/paper-plane-77a7e55aa20f4b6594ca385c7dcbeeaf
+* author:	Miroshkins (https://sketchfab.com/miroshkins)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Paper Plane" (https://sketchfab.com/3d-models/paper-plane-77a7e55aa20f4b6594ca385c7dcbeeaf) by Miroshkins (https://sketchfab.com/miroshkins) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
