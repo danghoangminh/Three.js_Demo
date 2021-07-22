@@ -4,6 +4,7 @@ var floor, geometry, material, mesh, floorMesh, light, axes;
 var gui;
 var stats;
 var name;
+var helper;
 // controls
 var controls, obControl, afControl;
 //animate
@@ -30,6 +31,7 @@ var settings = {
   light: {
     lightType: "pointLight",
     enable: true,
+    LightHelper: false,
     autorotate: false,
     shadow: true,
     automove: false,
@@ -82,7 +84,9 @@ function init() {
   light = new THREE.PointLight(0xffffff, 2, 100);
   light.position.set(0, 1, 0);
   light.castShadow = true; // default false
-
+  helper = new THREE.PointLightHelper(light);
+  light.add(helper);
+  helper.visible = false;
   // axesHelper
   axes = new THREE.GridHelper(100, 2);
 
@@ -302,6 +306,12 @@ function initGUI() {
     } else light.visible = false;
   });
 
+  h.add(settings["light"], "LightHelper").onChange(function () {
+    if (settings["light"].LightHelper == true) {
+      helper.visible = true;
+    } else helper.visible = false;
+  });
+
   h.add(settings["light"], "autorotate").onChange(function () {
     if (settings["light"].autorotate == true) {
       console.log("rotating light");
@@ -345,7 +355,13 @@ function lightChanged() {
         light.visible = false;
         light.castShadow = false;
         light = new THREE.SpotLight(0xffffff, 2, 100);
-        light.add(new THREE.SpotLightHelper(light));
+        helper = new THREE.SpotLightHelper(light);
+        light.add(helper);
+        if (settings["light"].LightHelper == false) {
+          helper.visible = false;
+        } else {
+          helper.visible = true;
+        }
         light.visible = true;
         light.position.set(0, 1, 0);
         light.castShadow = true;
@@ -359,7 +375,13 @@ function lightChanged() {
         light.visible = false;
         light.castShadow = false;
         light = new THREE.PointLight(0xffffff, 2, 100);
-        light.add(new THREE.PointLightHelper(light));
+        helper = new THREE.PointLightHelper(light);
+        light.add(helper);
+        if (settings["light"].LightHelper == false) {
+          helper.visible = false;
+        } else {
+          helper.visible = true;
+        }
         light.visible = true;
         light.position.set(0, 1, 0);
         light.castShadow = true;
@@ -374,7 +396,13 @@ function lightChanged() {
         light.visible = false;
         light.castShadow = false;
         light = new THREE.DirectionalLight(0xffffff, 2, 100);
-        light.add(new THREE.DirectionalLightHelper(light));
+        helper = new THREE.DirectionalLightHelper(light);
+        light.add(helper);
+        if (settings["light"].LightHelper == false) {
+          helper.visible = false;
+        } else {
+          helper.visible = true;
+        }
         light.visible = true;
         light.position.set(0, 1, 0);
         light.castShadow = true;
