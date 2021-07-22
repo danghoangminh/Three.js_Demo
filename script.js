@@ -25,7 +25,8 @@ var settings = {
   },
   geometry: {
     shape: "Cube",
-    material: "Basic",
+    color: "#9b9b9b",
+    material: "basic",
   },
   light: {
     lightType: "Point light",
@@ -56,7 +57,7 @@ function init() {
 
   // main object
   geometry = new THREE.BoxBufferGeometry(0.4, 0.4, 0.4);
-  material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+  material = new THREE.MeshBasicMaterial({ color: settings["geometry"].color });
   mesh = new THREE.Mesh(geometry, material);
   mesh.castShadow = true;
   mesh.receiveShadow = false;
@@ -86,7 +87,6 @@ function init() {
   floorMesh.rotation.x = -Math.PI / 2.0;
   floorMesh.name = "floor";
   floorMesh.position.set(0, -0.6, 0);
-
 
   // light
   light = new THREE.PointLight(0xffffff, 2, 100);
@@ -136,7 +136,6 @@ function init() {
     controls.enabled = !event.value;
   });
 
-  //afControl.attach(mesh);
   scene.add(afControl);
   window.addEventListener("resize", onWindowResize, false);
 }
@@ -172,7 +171,9 @@ function onWindowResize() {
 
 function initGUI() {
   gui = new dat.GUI();
+
   var h = gui.addFolder("Common");
+
   h.add(settings["common"], "scale", 0.1, 2, 0.1).name("Scale").onChange(function () {
     mesh.scale.set(
       settings["common"].scale,
@@ -180,6 +181,7 @@ function initGUI() {
       settings["common"].scale
     );
   });
+
   h.add(settings["common"], "showaxes").name("Show Axes").onChange(function () {
     if (settings["common"].showaxes == true) {
       axes.visible = true;
@@ -187,9 +189,13 @@ function initGUI() {
       axes.visible = false;
     }
   });
+
   h.add(settings["common"], "autorotate").name("Auto Rotate");
 
   h = gui.addFolder("Geometry");
+
+  h.addColor(settings["geometry"], 'color').name("Color").onChange(matChanged);
+
   h.add(settings["geometry"], "material", [
     "Basic",
     "Normal",
@@ -218,6 +224,7 @@ function initGUI() {
   ]).name("Shape").onChange(geometryChanged);
 
   h = gui.addFolder("Light");
+
   h.add(settings["light"], "lightType", [
     "Point light",
     "Spot light",
@@ -411,7 +418,7 @@ function matChanged() {
   change_material = true;
   switch (settings["geometry"].material) {
     case "Basic":
-      material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      material = new THREE.MeshBasicMaterial({ color: settings["geometry"].color });
       break;
     case "Line":
       material = new THREE.MeshNormalMaterial();
@@ -422,7 +429,7 @@ function matChanged() {
       break;
     case "Phong shading":
       material = new THREE.MeshPhongMaterial({
-        color: 0xdddddd,
+        color: settings["geometry"].color,
         specular: 0x009900,
         shininess: 10,
         flatShading: true,
@@ -430,7 +437,6 @@ function matChanged() {
       break;
     case "Lambert shading":
       material = new THREE.MeshLambertMaterial({
-        // color: 0xb00000,
         wireframe: false,
         envMap: cubeRenderTarget.texture,
         combine: THREE.MixOperation,
@@ -439,7 +445,7 @@ function matChanged() {
       break;
     case "Wire lambert":
       material = new THREE.MeshLambertMaterial({
-        color: 0xb00000,
+        color: settings["geometry"].color,
         wireframe: true,
       });
       break;
