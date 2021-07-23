@@ -351,8 +351,8 @@ function geometryChanged() {
         GetGeometryFrom3DModel(path, 0.2, 0.2, 0.2);
         return;
       case "Tire":
-        var path = 'models/3d_vehicle_tire_base_mesh/scene.gltf';
-        GetGeometryFrom3DModel(path, 0.4, 0.4, 0.4);
+        var path = 'models/old_wheel/scene.gltf';
+        GetGeometryFrom3DModel(path, 0.7, 0.7, 0.7);
         return;
       case "Pencil":
         var path = 'models/hexagon_pencil/scene.gltf';
