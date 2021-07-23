@@ -285,7 +285,7 @@ function animate() {
     var new_z = Math.cos(alpha);
     mesh.position.set(new_x, 1, new_z);
   }
-  
+
   if (settings["animation"].animation2 == true) {
     render(mixer);
     stats.update();
@@ -786,7 +786,7 @@ function updateMesh(g, m) {
     else {
       var matrix_transformation = mesh.matrix.clone();
 
-      clearAffine();
+      //clearAffine();
       clearGeometry();
 
       mesh = new THREE.Mesh(g, m);
@@ -800,6 +800,7 @@ function updateMesh(g, m) {
       mesh.name = "object";
 
       scene.add(mesh);
+      affineChanged();
     }
   }
   gui.updateDisplay();
