@@ -9,6 +9,7 @@ var stats;
 var change_material = false;
 
 const loader = new GLTFLoader();
+gui = new dat.GUI();
 
 // controls
 var afControl;
@@ -170,8 +171,6 @@ function onWindowResize() {
 }
 
 function initGUI() {
-  gui = new dat.GUI();
-
   var h = gui.addFolder("Common");
 
   h.add(settings["common"], "scale", 0.1, 2, 0.1).name("Scale").onChange(function () {
@@ -545,7 +544,7 @@ function clearGeometry() {
 
 function clearAffine() {
   afControl.detach();
-  settings["affine"].mode = "none";
+  settings["affine"].mode = "None";
 }
 
 function updateMesh(g, m) {
@@ -571,6 +570,7 @@ function updateMesh(g, m) {
     change_material = false;
     mesh.material = m;
   }
+  gui.updateDisplay();
 }
 
 function uploadImage() {
