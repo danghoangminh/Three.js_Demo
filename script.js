@@ -1,4 +1,4 @@
-import { GLTFLoader } from 'https://threejsfundamentals.org/threejs/resources/threejs/r127/examples/jsm/loaders/GLTFLoader.js';
+import { GLTFLoader } from "https://threejsfundamentals.org/threejs/resources/threejs/r127/examples/jsm/loaders/GLTFLoader.js";
 
 // global variables
 var camera, scene, renderer, reflectionCamera, cubeRenderTarget;
@@ -51,10 +51,9 @@ var settings = {
     mode: "None",
   },
   animation: {
-    animation1: false,
-    animation2: false,
+    animation: "None",
   },
-  reset: function() {
+  reset: function () {
     this.common.scale = 1;
     this.common.autorotate = false;
     this.common.showaxes = true;
@@ -63,8 +62,7 @@ var settings = {
     this.geometry.color = "#9b9b9b";
     this.geometry.material = "Basic";
 
-    this.light.lightType = "Point light",
-    this.light.enable = true;
+    (this.light.lightType = "Point light"), (this.light.enable = true);
     this.light.lightHelper = false;
     this.light.autorotate = false;
     this.light.shadow = true;
@@ -83,7 +81,7 @@ var settings = {
     affineChanged();
     lightChanged();
     geometryChanged();
-  }
+  },
 };
 
 init();
@@ -110,12 +108,15 @@ function init() {
   mesh.name = "object";
 
   // load the cube map
-  var cubemap_path = '/images/cubemap/skyboxsun25deg/';
-  var cubemap_format = '.jpg';
+  var cubemap_path = "/images/cubemap/skyboxsun25deg/";
+  var cubemap_format = ".jpg";
   var urls = [
-    cubemap_path + 'px' + cubemap_format, cubemap_path + 'nx' + cubemap_format,
-    cubemap_path + 'py' + cubemap_format, cubemap_path + 'ny' + cubemap_format,
-    cubemap_path + 'pz' + cubemap_format, cubemap_path + 'nz' + cubemap_format,
+    cubemap_path + "px" + cubemap_format,
+    cubemap_path + "nx" + cubemap_format,
+    cubemap_path + "py" + cubemap_format,
+    cubemap_path + "ny" + cubemap_format,
+    cubemap_path + "pz" + cubemap_format,
+    cubemap_path + "nz" + cubemap_format,
   ];
   var refection_cube = new THREE.CubeTextureLoader().load(urls);
   refection_cube.format = THREE.RGBFormat;
@@ -123,9 +124,12 @@ function init() {
   // floor
   floor = new THREE.PlaneBufferGeometry(5, 5, 32, 32);
 
-  var floorMat = new THREE.MeshStandardMaterial({ color: 0x222222, side: THREE.DoubleSide });
+  var floorMat = new THREE.MeshStandardMaterial({
+    color: 0x222222,
+    side: THREE.DoubleSide,
+  });
   var texture_loader = new THREE.TextureLoader();
-  floorMat.map = texture_loader.load('/images/textures/floor.jpg');
+  floorMat.map = texture_loader.load("/images/textures/floor.jpg");
   floorMat.envMap = refection_cube;
 
   floorMesh = new THREE.Mesh(floor, floorMat);
@@ -149,7 +153,7 @@ function init() {
   cubeRenderTarget = new THREE.WebGLCubeRenderTarget(128, {
     format: THREE.RGBFormat,
     generateMipmaps: true,
-    minFilter: THREE.LinearMipmapLinearFilter
+    minFilter: THREE.LinearMipmapLinearFilter,
   });
   reflectionCamera = new THREE.CubeCamera(1, 1000, cubeRenderTarget);
   mesh.add(reflectionCamera);
@@ -297,14 +301,14 @@ function animate() {
     if (alpha == 2 * Math.PI) alpha = 0;
   }
 
-  if (settings["animation"].animation1 == true) {
+  if (settings["animation"].animation == "Animation 1") {
     alpha = Math.PI * 0.01 + alpha;
     var new_x = Math.sin(alpha);
     var new_z = Math.cos(alpha);
     mesh.position.set(new_x, 1, new_z);
   }
 
-  if (settings["animation"].animation2 == true) {
+  if (settings["animation"].animation == "Animation 2") {
     render(mixer);
   }
 
@@ -325,27 +329,31 @@ function initGUI() {
 
   var h = gui.addFolder("Common");
 
-  h.add(settings["common"], "scale", 0.1, 2, 0.1).name("Scale").onChange(function () {
-    mesh.scale.set(
-      settings["common"].scale,
-      settings["common"].scale,
-      settings["common"].scale
-    );
-  });
+  h.add(settings["common"], "scale", 0.1, 2, 0.1)
+    .name("Scale")
+    .onChange(function () {
+      mesh.scale.set(
+        settings["common"].scale,
+        settings["common"].scale,
+        settings["common"].scale
+      );
+    });
 
-  h.add(settings["common"], "showaxes").name("Show Axes").onChange(function () {
-    if (settings["common"].showaxes == true) {
-      axes.visible = true;
-    } else {
-      axes.visible = false;
-    }
-  });
+  h.add(settings["common"], "showaxes")
+    .name("Show Axes")
+    .onChange(function () {
+      if (settings["common"].showaxes == true) {
+        axes.visible = true;
+      } else {
+        axes.visible = false;
+      }
+    });
 
   h.add(settings["common"], "autorotate").name("Auto Rotate");
 
   h = gui.addFolder("Geometry");
 
-  h.addColor(settings["geometry"], 'color').name("Color").onChange(matChanged);
+  h.addColor(settings["geometry"], "color").name("Color").onChange(matChanged);
 
   h.add(settings["geometry"], "material", [
     "Basic",
@@ -359,7 +367,9 @@ function initGUI() {
     "Wood texture 2",
     "Concrete texture 1",
     "Concrete texture 2",
-  ]).name("Material").onChange(matChanged);
+  ])
+    .name("Material")
+    .onChange(matChanged);
 
   h.add(settings["geometry"], "shape", [
     "Cube",
@@ -372,7 +382,9 @@ function initGUI() {
     "Pencil",
     "Pencil holder",
     "Paper plane",
-  ]).name("Shape").onChange(geometryChanged);
+  ])
+    .name("Shape")
+    .onChange(geometryChanged);
 
   h = gui.addFolder("Light");
 
@@ -381,37 +393,47 @@ function initGUI() {
     "Spot light",
     "Directional light",
     "Ambient light",
-  ]).name("Light Type").onChange(lightChanged);
+  ])
+    .name("Light Type")
+    .onChange(lightChanged);
 
-  h.add(settings["light"], "enable").name("Enable").onChange(function () {
-    if (settings["light"].enable == true) {
-      light.visible = true;
-    } else light.visible = false;
-  });
+  h.add(settings["light"], "enable")
+    .name("Enable")
+    .onChange(function () {
+      if (settings["light"].enable == true) {
+        light.visible = true;
+      } else light.visible = false;
+    });
 
-  h.add(settings["light"], "lightHelper").name("Light Helper").onChange(function () {
-    if (settings["light"].lightHelper == true) {
-      helper.visible = true;
-    } else helper.visible = false;
-  });
+  h.add(settings["light"], "lightHelper")
+    .name("Light Helper")
+    .onChange(function () {
+      if (settings["light"].lightHelper == true) {
+        helper.visible = true;
+      } else helper.visible = false;
+    });
 
-  h.add(settings["light"], "autorotate").name("Auto Rotate").onChange(function () {
-    if (settings["light"].autorotate == true) {
-      console.log("rotating light");
-    }
-  });
+  h.add(settings["light"], "autorotate")
+    .name("Auto Rotate")
+    .onChange(function () {
+      if (settings["light"].autorotate == true) {
+        console.log("rotating light");
+      }
+    });
 
-  h.add(settings["light"], "shadow").name("Shadows").onChange(function () {
-    if (settings["light"].shadow == false) {
-      console.log("no shadows");
-      floorMesh.receiveShadow = false;
-      light.castShadow = false;
-    } else {
-      floorMesh.receiveShadow = true;
-      light.castShadow = true;
-      mesh.castShadow = true;
-    }
-  });
+  h.add(settings["light"], "shadow")
+    .name("Shadows")
+    .onChange(function () {
+      if (settings["light"].shadow == false) {
+        console.log("no shadows");
+        floorMesh.receiveShadow = false;
+        light.castShadow = false;
+      } else {
+        floorMesh.receiveShadow = true;
+        light.castShadow = true;
+        mesh.castShadow = true;
+      }
+    });
 
   h.add(settings["light"], "positionX", -10, 10).onChange(function () {
     light.position.x = settings["light"].positionX;
@@ -425,23 +447,25 @@ function initGUI() {
     light.position.z = settings["light"].positionZ;
   });
 
-  h.add(settings["light"], "intensity", 0, 50, 2).name("Intensity").onChange(function () {
-    light.intensity = settings["light"].intensity;
-  });
+  h.add(settings["light"], "intensity", 0, 50, 2)
+    .name("Intensity")
+    .onChange(function () {
+      light.intensity = settings["light"].intensity;
+    });
 
   h = gui.addFolder("Affine");
 
-  h.add(settings["affine"], "mode", [
-    "None",
-    "Translate",
-    "Rotate",
-    "Scale",
-  ]).name("Mode").onChange(affineChanged);
+  h.add(settings["affine"], "mode", ["None", "Translate", "Rotate", "Scale"])
+    .name("Mode")
+    .onChange(affineChanged);
 
   h = gui.addFolder("Animation");
 
-  h.add(settings["animation"], "animation1").name("Animation 1");
-  h.add(settings["animation"], "animation2").name("Animation 2");
+  h.add(settings["animation"], "animation", [
+    "None",
+    "Animation 1",
+    "Animation 2",
+  ]).name("Animation");
 
   gui.add(settings, "reset").name("Reset All");
 }
@@ -540,23 +564,23 @@ function geometryChanged() {
         geometry = new THREE.CylinderBufferGeometry(0.4, 0.4, 0.8, 32, 32);
         break;
       case "Teapot":
-        var path = 'models/kettle_lowpoly/scene.gltf';
+        var path = "models/kettle_lowpoly/scene.gltf";
         GetGeometryFrom3DModel(path, 0.2, 0.2, 0.2);
         return;
       case "Tire":
-        var path = 'models/old_wheel/scene.gltf';
+        var path = "models/old_wheel/scene.gltf";
         GetGeometryFrom3DModel(path, 0.7, 0.7, 0.7);
         return;
       case "Pencil":
-        var path = 'models/hexagon_pencil/scene.gltf';
+        var path = "models/hexagon_pencil/scene.gltf";
         GetGeometryFrom3DModel(path, 0.2, 0.2, 0.2);
         return;
       case "Pencil holder":
-        var path = 'models/pencil_holder/scene.gltf';
+        var path = "models/pencil_holder/scene.gltf";
         GetGeometryFrom3DModel(path, 0.4, 0.4, 0.4);
         return;
       case "Paper plane":
-        var path = 'models/paper_plane/scene.gltf';
+        var path = "models/paper_plane/scene.gltf";
         GetGeometryFrom3DModel(path, 0.5, 0.5, 0.5);
         return;
     }
@@ -564,27 +588,35 @@ function geometryChanged() {
 }
 
 function GetGeometryFrom3DModel(path, scale_x, scale_y, scale_z) {
-  loader.load(path, function (gltf) {
-    gltf.scene.traverse(function (child) {
-      if (child.isMesh) {
+  loader.load(
+    path,
+    function (gltf) {
+      gltf.scene.traverse(function (child) {
+        if (child.isMesh) {
+          child.scale.set(
+            child.scale.x * scale_x,
+            child.scale.y * scale_y,
+            child.scale.z * scale_z
+          );
 
-        child.scale.set(child.scale.x * scale_x,
-          child.scale.y * scale_y,
-          child.scale.z * scale_z);
+          geometry = child.geometry
+            .scale(
+              child.scale.x * scale_x,
+              child.scale.y * scale_y,
+              child.scale.z * scale_z
+            )
+            .clone();
 
-        geometry = child.geometry.scale(
-          child.scale.x * scale_x,
-          child.scale.y * scale_y,
-          child.scale.z * scale_z
-        ).clone();
-
-        updateMesh(geometry, material);
-        return 0;
-      }
-    })
-  }, undefined, function (error) {
-    console.error(error);
-  });
+          updateMesh(geometry, material);
+          return 0;
+        }
+      });
+    },
+    undefined,
+    function (error) {
+      console.error(error);
+    }
+  );
 }
 
 function affineChanged() {
@@ -613,7 +645,9 @@ function matChanged() {
   change_material = true;
   switch (settings["geometry"].material) {
     case "Basic":
-      material = new THREE.MeshBasicMaterial({ color: settings["geometry"].color });
+      material = new THREE.MeshBasicMaterial({
+        color: settings["geometry"].color,
+      });
       break;
     case "Line":
       material = new THREE.MeshNormalMaterial();
@@ -635,7 +669,7 @@ function matChanged() {
         wireframe: false,
         envMap: cubeRenderTarget.texture,
         combine: THREE.MixOperation,
-        reflectivity: .7
+        reflectivity: 0.7,
       });
       break;
     case "Wire lambert":
@@ -752,8 +786,7 @@ function updateMesh(g, m) {
   if (change_material == false) {
     if (settings["geometry"].material == "Points") {
       mesh = new THREE.Points(g, m);
-    }
-    else {
+    } else {
       mesh = new THREE.Mesh(g, m);
     }
 
@@ -771,8 +804,8 @@ function updateMesh(g, m) {
     console.log(mesh.position);
     console.log(mesh.visible);
     scene.add(mesh);
-  }
-  else {
+    mixer = animation2(mesh);
+  } else {
     change_material = false;
 
     if (settings["geometry"].material == "Points") {
@@ -789,8 +822,8 @@ function updateMesh(g, m) {
       mesh.name = "object";
 
       scene.add(mesh);
-    }
-    else {
+      mixer = animation2(mesh);
+    } else {
       var matrix_transformation = mesh.matrix.clone();
 
       mesh = new THREE.Mesh(g, m);
@@ -804,6 +837,7 @@ function updateMesh(g, m) {
       mesh.name = "object";
 
       scene.add(mesh);
+      mixer = animation2(mesh);
     }
   }
   affineChanged();
