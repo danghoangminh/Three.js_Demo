@@ -728,11 +728,9 @@ function clearAffine() {
 }
 
 function updateMesh(g, m) {
-  // if we change the geometry, then: create a new geometry and add it to the scene
-  if (change_material == false) {
-    clearGeometry();
+  clearGeometry();
 
-    // if draw by Points, then create 3D object with Points
+  if (change_material == false) {
     if (settings["geometry"].material == "Points") {
       mesh = new THREE.Points(g, m);
     }
@@ -758,16 +756,8 @@ function updateMesh(g, m) {
   else {
     change_material = false;
 
-    // if the new material is Points, then:
-    //    Take transformation matrix from the 3D object
-    //    Delete the 3D object
-    //    Create new 3D object with Points
-    //    Apply the transformation matrix to the new 3D object
-    //    Add the new 3D object to the scene
     if (settings["geometry"].material == "Points") {
       var matrix_transformation = mesh.matrix.clone();
-
-      clearGeometry();
 
       mesh = new THREE.Points(g, m);
 
@@ -783,8 +773,6 @@ function updateMesh(g, m) {
     }
     else {
       var matrix_transformation = mesh.matrix.clone();
-
-      clearGeometry();
 
       mesh = new THREE.Mesh(g, m);
 
