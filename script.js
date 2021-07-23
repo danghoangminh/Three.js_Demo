@@ -56,7 +56,6 @@ var settings = {
   reset: function () {
     this.common.scale = 1;
     this.common.autorotate = false;
-    this.common.showaxes = true;
 
     this.geometry.shape = "Cube";
     this.geometry.color = "#9b9b9b";
