@@ -403,7 +403,7 @@ function initGUI() {
   });
 
   h.add(settings["light"], "lightHelper").name("Light Helper").onChange(function () {
-    if (settings["light"].LightHelper == true) {
+    if (settings["light"].lightHelper == true) {
       helper.visible = true;
     } else helper.visible = false;
   });
@@ -469,7 +469,7 @@ function lightChanged() {
         light = new THREE.SpotLight(0xffffff, 2, 100);
         helper = new THREE.SpotLightHelper(light);
         light.add(helper);
-        if (settings["light"].LightHelper == false) {
+        if (settings["light"].lightHelper == false) {
           helper.visible = false;
         } else {
           helper.visible = true;
@@ -488,7 +488,7 @@ function lightChanged() {
         light = new THREE.PointLight(0xffffff, 2, 100);
         helper = new THREE.PointLightHelper(light);
         light.add(helper);
-        if (settings["light"].LightHelper == false) {
+        if (settings["light"].lightHelper == false) {
           helper.visible = false;
         } else {
           helper.visible = true;
@@ -508,7 +508,7 @@ function lightChanged() {
         light = new THREE.DirectionalLight(0xffffff, 2, 100);
         helper = new THREE.DirectionalLightHelper(light);
         light.add(helper);
-        if (settings["light"].LightHelper == false) {
+        if (settings["light"].lightHelper == false) {
           helper.visible = false;
         } else {
           helper.visible = true;
