@@ -28,7 +28,7 @@ var settings = {
   common: {
     scale: 1,
     autorotate: false,
-    showaxes: true,
+    showaxes: false,
   },
   geometry: {
     shape: "Cube",
