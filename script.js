@@ -360,7 +360,7 @@ function initGUI() {
     } else light.visible = false;
   });
 
-  h.add(settings["light"], "lightHelper").onChange(function () {
+  h.add(settings["light"], "lightHelper").name("Light Helper").onChange(function () {
     if (settings["light"].LightHelper == true) {
       helper.visible = true;
     } else helper.visible = false;
