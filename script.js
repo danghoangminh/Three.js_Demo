@@ -730,7 +730,6 @@ function clearAffine() {
 function updateMesh(g, m) {
   // if we change the geometry, then: create a new geometry and add it to the scene
   if (change_material == false) {
-    clearAffine();
     clearGeometry();
 
     // if draw by Points, then create 3D object with Points
@@ -768,7 +767,6 @@ function updateMesh(g, m) {
     if (settings["geometry"].material == "Points") {
       var matrix_transformation = mesh.matrix.clone();
 
-      clearAffine();
       clearGeometry();
 
       mesh = new THREE.Points(g, m);
@@ -786,7 +784,6 @@ function updateMesh(g, m) {
     else {
       var matrix_transformation = mesh.matrix.clone();
 
-      //clearAffine();
       clearGeometry();
 
       mesh = new THREE.Mesh(g, m);
@@ -800,8 +797,8 @@ function updateMesh(g, m) {
       mesh.name = "object";
 
       scene.add(mesh);
-      affineChanged();
     }
   }
+  affineChanged();
   gui.updateDisplay();
 }
