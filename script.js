@@ -7,6 +7,7 @@ var gui;
 var stats;
 
 var change_material = false;
+// var current_is_points_material = false;
 
 const loader = new GLTFLoader();
 
@@ -203,6 +204,7 @@ function initGUI() {
     "Phong shading",
     "Lambert shading",
     "Wire lambert",
+    "Points",
     "Wood texture 1",
     "Wood texture 2",
     "Concrete texture 1",
@@ -449,6 +451,13 @@ function matChanged() {
         wireframe: true,
       });
       break;
+    case "Points":
+      // current_is_points_material = true;
+      material = new THREE.PointsMaterial({
+        color: settings["geometry"].color,
+        sizeAttenuation: false,
+      });
+      break;
     case "Wood texture 1":
       var texture = new THREE.TextureLoader().load(
         "/images/textures/Wood_1.jpg",
@@ -549,10 +558,19 @@ function clearAffine() {
 }
 
 function updateMesh(g, m) {
+  // if we change the geometry, then: create a new geometry and add it to the scene
   if (change_material == false) {
     clearAffine();
     clearGeometry();
-    mesh = new THREE.Mesh(g, m);
+
+    // if draw by Points, then create 3D object with Points
+    if (settings["geometry"].material == "Points") {
+      mesh = new THREE.Points(g, m);
+    }
+    else {
+      mesh = new THREE.Mesh(g, m);
+    }
+    
     if (settings["light"].shadow == true) {
       mesh.castShadow = true;
       mesh.receiveShadow = false;
@@ -563,13 +581,67 @@ function updateMesh(g, m) {
       settings["common"].scale,
       settings["common"].scale
     );
+
     console.log(mesh.position);
     console.log(mesh.visible);
     scene.add(mesh);
   }
+  // if we change the material
   else {
     change_material = false;
-    mesh.material = m;
+
+    // if the new material is Points, then:
+    //    Take transformation matrix from the 3D object
+    //    Delete the 3D object
+    //    Create new 3D object with Points
+    //    Apply the transformation matrix to the new 3D object
+    //    Add the new 3D object to the scene
+    if (settings["geometry"].material == "Points") {
+      var matrix_transformation = mesh.matrix.clone();
+
+      clearAffine();
+      clearGeometry();
+
+      mesh = new THREE.Points(g, m);
+
+      mesh.applyMatrix4(matrix_transformation);
+
+      if (settings["light"].shadow == true) {
+        mesh.castShadow = true;
+        mesh.receiveShadow = false;
+      }
+      mesh.name = "object";
+
+      scene.add(mesh);
+    }
+    // if the new material is not Points
+    else {
+      // // if the previous 3D object is not created by Points, then change only the material
+      // if (current_is_points_material == false) {
+      //   mesh.material = m;
+      // }
+      // if the previous 3D object is created by Points, then do just like when we change the material with Points
+      //    but this time, we create the new 3D object with Mesh()
+      // else {
+        var matrix_transformation = mesh.matrix.clone();
+
+        clearAffine();
+        clearGeometry();
+
+        mesh = new THREE.Mesh(g, m);
+
+        mesh.applyMatrix4(matrix_transformation);
+
+        if (settings["light"].shadow == true) {
+          mesh.castShadow = true;
+          mesh.receiveShadow = false;
+        }
+        mesh.name = "object";
+
+        scene.add(mesh);
+      // }    
+      
+    }
   }
 }
 
