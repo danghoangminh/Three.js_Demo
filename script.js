@@ -1,6 +1,6 @@
 import { GLTFLoader } from 'https://threejsfundamentals.org/threejs/resources/threejs/r127/examples/jsm/loaders/GLTFLoader.js';
 
-/// global variables
+// global variables
 var camera, scene, renderer, reflectionCamera, cubeRenderTarget;
 var floor, geometry, material, mesh, floorMesh, light, axes;
 var gui;
@@ -11,6 +11,11 @@ var helper;
 var change_material = false;
 
 const loader = new GLTFLoader();
+
+var change_material = false;
+
+const loader = new GLTFLoader();
+gui = new dat.GUI();
 
 // controls
 var controls, afControl;
@@ -436,7 +441,6 @@ function lightChanged() {
         light.castShadow = true;
         scene.add(light);
       }
-
       break;
     case "Point light":
       if (settings["light"].enable === false) light.visible = false;
@@ -456,7 +460,6 @@ function lightChanged() {
         light.castShadow = true;
         scene.add(light);
       }
-
       break;
     case "Directional light":
       if (settings["light"].enable === false) light.visible = false;
