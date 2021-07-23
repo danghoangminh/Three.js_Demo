@@ -342,7 +342,6 @@ function initGUI() {
     "Wood texture 2",
     "Concrete texture 1",
     "Concrete texture 2",
-    "Choose image",
   ]).name("Material").onChange(matChanged);
 
   h.add(settings["geometry"], "shape", [
@@ -712,9 +711,6 @@ function matChanged() {
       );
       material = new THREE.MeshBasicMaterial({ map: texture });
       break;
-    case "Choose image":
-      uploadImage();
-      break;
   }
   updateMesh(geometry, material);
 }
@@ -807,8 +803,4 @@ function updateMesh(g, m) {
     }
   }
   gui.updateDisplay();
-}
-
-function uploadImage() {
-  console.log("clicked");
 }
