@@ -283,18 +283,6 @@ function animation2(mesh) {
 function animate() {
   requestAnimationFrame(animate);
 
-  if (settings["animation"].animation2 == true) {
-    render(mixer);
-    stats.update();
-  }
-
-  if (settings["animation"].animation1 == true) {
-    alpha = Math.PI * 0.01 + alpha;
-    var new_x = Math.sin(alpha);
-    var new_z = Math.cos(alpha);
-    mesh.position.set(new_x, 1, new_z);
-  }
-
   if (settings["common"].autorotate == true) {
     mesh.rotation.x += 0.01;
     mesh.rotation.y += 0.02;
@@ -318,7 +306,6 @@ function animate() {
 
   if (settings["animation"].animation2 == true) {
     render(mixer);
-    stats.update();
   }
 
   renderer.render(scene, camera);
