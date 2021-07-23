@@ -5,6 +5,12 @@ var camera, scene, renderer, reflectionCamera, cubeRenderTarget;
 var floor, geometry, material, mesh, floorMesh, light, axes;
 var gui;
 var stats;
+var name;
+var helper;
+
+var change_material = false;
+
+const loader = new GLTFLoader();
 
 var change_material = false;
 
@@ -12,10 +18,16 @@ const loader = new GLTFLoader();
 gui = new dat.GUI();
 
 // controls
-var afControl;
+var controls, afControl;
+
+//animate
+var mixer;
 
 // rotation values
 var alpha = 0;
+
+// clock
+var clock = new THREE.Clock();
 
 // gui settings
 var settings = {
@@ -32,13 +44,21 @@ var settings = {
   light: {
     lightType: "Point light",
     enable: true,
+    lightHelper: false,
     autorotate: false,
     shadow: true,
     automove: false,
+    positionX: 0,
+    positionY: 1,
+    positionZ: 0,
     intensity: 4,
   },
   affine: {
     mode: "None",
+  },
+  animation: {
+    animation1: false,
+    animation2: false,
   },
 };
 
@@ -53,6 +73,7 @@ function init() {
     0.1,
     1000
   );
+
   camera.position.z = 2;
   scene = new THREE.Scene();
 
@@ -93,6 +114,9 @@ function init() {
   light = new THREE.PointLight(0xffffff, 2, 100);
   light.position.set(0, 1, 0);
   light.castShadow = true; // default false
+  helper = new THREE.PointLightHelper(light);
+  light.add(helper);
+  helper.visible = false;
 
   // axesHelper
   axes = new THREE.GridHelper(100, 2);
@@ -124,7 +148,7 @@ function init() {
   document.body.appendChild(stats.dom);
 
   // controls
-  var controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls = new THREE.OrbitControls(camera, renderer.domElement);
   controls.maxPolarAngle = Math.PI * 1;
   controls.minDistance = 1;
   controls.maxDistance = 10;
@@ -137,12 +161,115 @@ function init() {
     controls.enabled = !event.value;
   });
 
+  // animation
+  mixer = animation2(mesh);
+
   scene.add(afControl);
   window.addEventListener("resize", onWindowResize, false);
 }
 
+function render(mixer) {
+  const delta = clock.getDelta();
+
+  if (mixer) {
+    mixer.update(delta);
+  }
+  renderer.render(scene, camera);
+}
+
+function animation2(mesh) {
+  const positionKF = new THREE.VectorKeyframeTrack(
+    ".position",
+    [0, 1, 2],
+    [0, 0, 0, 0, 0, -30, 0, 0, 0]
+  );
+  //4 back
+  // SCALE
+  const scaleKF = new THREE.VectorKeyframeTrack(
+    ".scale",
+    [0, 1, 2],
+    [1, 1, 1, 2, 2, 2, 1, 1, 1]
+  );
+
+  // ROTATION
+  // Rotation should be performed using quaternions, using a THREE.QuaternionKeyframeTrack
+  // Interpolating Euler angles (.rotation property) can be problematic and is currently not supported
+
+  // set up rotation about x axis
+  const xAxis = new THREE.Vector3(1, 0, 0);
+
+  const qInitial = new THREE.Quaternion().setFromAxisAngle(xAxis, 0);
+  const qFinal = new THREE.Quaternion().setFromAxisAngle(xAxis, Math.PI);
+  const quaternionKF = new THREE.QuaternionKeyframeTrack(
+    ".quaternion",
+    [0, 1, 2],
+    [
+      qInitial.x,
+      qInitial.y,
+      qInitial.z,
+      qInitial.w,
+      qFinal.x,
+      qFinal.y,
+      qFinal.z,
+      qFinal.w,
+      qInitial.x,
+      qInitial.y,
+      qInitial.z,
+      qInitial.w,
+    ]
+  );
+
+  // COLOR
+  const colorKF = new THREE.ColorKeyframeTrack(
+    ".material.color",
+    [0, 1, 2],
+    [1, 0, 0, 0, 1, 0, 0, 0, 1],
+    THREE.InterpolateDiscrete
+  );
+
+  // OPACITY
+  const opacityKF = new THREE.NumberKeyframeTrack(
+    ".material.opacity",
+    [0, 1, 2],
+    [1, 0, 1]
+  );
+
+  // create an animation sequence with the tracks
+  // If a negative time value is passed, the duration will be calculated from the times of the passed tracks array
+  const clip = new THREE.AnimationClip("Action", 3, [
+    scaleKF,
+    positionKF,
+    quaternionKF,
+    colorKF,
+    opacityKF,
+  ]);
+
+  // setup the THREE.AnimationMixer
+  mixer = new THREE.AnimationMixer(mesh);
+
+  // create a ClipAction and set it to play
+  const clipAction = mixer.clipAction(clip);
+  clipAction.play();
+
+  //
+  clock = new THREE.Clock();
+  return mixer;
+}
+
 function animate() {
   requestAnimationFrame(animate);
+
+  if (settings["animation"].animation2 == true) {
+    render(mixer);
+    stats.update();
+  }
+
+  if (settings["animation"].animation1 == true) {
+    alpha = Math.PI * 0.01 + alpha;
+    var new_x = Math.sin(alpha);
+    var new_z = Math.cos(alpha);
+    mesh.position.set(new_x, 1, new_z);
+  }
 
   if (settings["common"].autorotate == true) {
     mesh.rotation.x += 0.01;
@@ -171,7 +298,9 @@ function onWindowResize() {
 }
 
 function initGUI() {
-  var h = gui.addFolder("Common");
+  gui = new dat.GUI();
+
+  h = gui.addFolder("Common");
 
   h.add(settings["common"], "scale", 0.1, 2, 0.1).name("Scale").onChange(function () {
     mesh.scale.set(
@@ -237,6 +366,12 @@ function initGUI() {
     } else light.visible = false;
   });
 
+  h.add(settings["light"], "LightHelper").onChange(function () {
+    if (settings["light"].LightHelper == true) {
+      helper.visible = true;
+    } else helper.visible = false;
+  });
+
   h.add(settings["light"], "autorotate").name("Auto Rotate").onChange(function () {
     if (settings["light"].autorotate == true) {
       console.log("rotating light");
@@ -255,17 +390,35 @@ function initGUI() {
     }
   });
 
+  h.add(settings["light"], "positionX", -10, 10).onChange(function () {
+    light.position.x = settings["light"].positionX;
+  });
+
+  h.add(settings["light"], "positionY", -10, 10).onChange(function () {
+    light.position.y = settings["light"].positionY;
+  });
+
+  h.add(settings["light"], "positionZ", -10, 10).onChange(function () {
+    light.position.z = settings["light"].positionZ;
+  });
+
   h.add(settings["light"], "intensity", 0, 50, 2).name("Intensity").onChange(function () {
     light.intensity = settings["light"].intensity;
   });
 
   h = gui.addFolder("Affine");
+
   h.add(settings["affine"], "mode", [
     "None",
     "Translate",
     "Rotate",
     "Scale",
   ]).name("Mode").onChange(affineChanged);
+
+  h = gui.addFolder("Animation");
+
+  h.add(settings["animation"], "animation1").name("Animation 1");
+  h.add(settings["animation"], "animation2").name("Animation 2");
 }
 
 function lightChanged() {
@@ -276,7 +429,13 @@ function lightChanged() {
         light.visible = false;
         light.castShadow = false;
         light = new THREE.SpotLight(0xffffff, 2, 100);
-        light.add(new THREE.SpotLightHelper(light));
+        helper = new THREE.SpotLightHelper(light);
+        light.add(helper);
+        if (settings["light"].LightHelper == false) {
+          helper.visible = false;
+        } else {
+          helper.visible = true;
+        }
         light.visible = true;
         light.position.set(0, 1, 0);
         light.castShadow = true;
@@ -289,7 +448,13 @@ function lightChanged() {
         light.visible = false;
         light.castShadow = false;
         light = new THREE.PointLight(0xffffff, 2, 100);
-        light.add(new THREE.PointLightHelper(light));
+        helper = new THREE.PointLightHelper(light);
+        light.add(helper);
+        if (settings["light"].LightHelper == false) {
+          helper.visible = false;
+        } else {
+          helper.visible = true;
+        }
         light.visible = true;
         light.position.set(0, 1, 0);
         light.castShadow = true;
@@ -303,7 +468,13 @@ function lightChanged() {
         light.visible = false;
         light.castShadow = false;
         light = new THREE.DirectionalLight(0xffffff, 2, 100);
-        light.add(new THREE.DirectionalLightHelper(light));
+        helper = new THREE.DirectionalLightHelper(light);
+        light.add(helper);
+        if (settings["light"].LightHelper == false) {
+          helper.visible = false;
+        } else {
+          helper.visible = true;
+        }
         light.visible = true;
         light.position.set(0, 1, 0);
         light.castShadow = true;
