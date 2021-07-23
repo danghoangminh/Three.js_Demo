@@ -278,7 +278,6 @@ function animation2(mesh) {
   const clipAction = mixer.clipAction(clip);
   clipAction.play();
 
-  //
   clock = new THREE.Clock();
   return mixer;
 }
@@ -366,9 +365,7 @@ function initGUI() {
     "Wood texture 2",
     "Concrete texture 1",
     "Concrete texture 2",
-  ])
-    .name("Material")
-    .onChange(matChanged);
+  ]).name("Material").onChange(matChanged);
 
   h.add(settings["geometry"], "shape", [
     "Cube",
@@ -381,9 +378,7 @@ function initGUI() {
     "Pencil",
     "Pencil holder",
     "Paper plane",
-  ])
-    .name("Shape")
-    .onChange(geometryChanged);
+  ]).name("Shape").onChange(geometryChanged);
 
   h = gui.addFolder("Light");
 
@@ -392,9 +387,7 @@ function initGUI() {
     "Spot light",
     "Directional light",
     "Ambient light",
-  ])
-    .name("Light Type")
-    .onChange(lightChanged);
+  ]).name("Light Type").onChange(lightChanged);
 
   h.add(settings["light"], "enable")
     .name("Enable")
@@ -454,9 +447,12 @@ function initGUI() {
 
   h = gui.addFolder("Affine");
 
-  h.add(settings["affine"], "mode", ["None", "Translate", "Rotate", "Scale"])
-    .name("Mode")
-    .onChange(affineChanged);
+  h.add(settings["affine"], "mode", [
+    "None",
+    "Translate",
+    "Rotate",
+    "Scale",
+  ]).name("Mode").onChange(affineChanged);
 
   h = gui.addFolder("Animation");
 
