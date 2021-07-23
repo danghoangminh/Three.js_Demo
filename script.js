@@ -54,6 +54,36 @@ var settings = {
     animation1: false,
     animation2: false,
   },
+  reset: function() {
+    this.common.scale = 1;
+    this.common.autorotate = false;
+    this.common.showaxes = true;
+
+    this.geometry.shape = "Cube";
+    this.geometry.color = "#9b9b9b";
+    this.geometry.material = "Basic";
+
+    this.light.lightType = "Point light",
+    this.light.enable = true;
+    this.light.lightHelper = false;
+    this.light.autorotate = false;
+    this.light.shadow = true;
+    this.light.automove = false;
+    this.light.positionX = 0;
+    this.light.positionY = 1;
+    this.light.positionZ = 0;
+    this.light.intensity = 4;
+
+    this.affine.mode = "None";
+
+    this.animation.animation1 = false;
+    this.animation.animation2 = false;
+
+    matChanged();
+    affineChanged();
+    lightChanged();
+    geometryChanged();
+  }
 };
 
 init();
@@ -425,6 +455,8 @@ function initGUI() {
 
   h.add(settings["animation"], "animation1").name("Animation 1");
   h.add(settings["animation"], "animation2").name("Animation 2");
+
+  gui.add(settings, "reset").name("Reset All");
 }
 
 function lightChanged() {
