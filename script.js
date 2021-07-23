@@ -5,17 +5,11 @@ var camera, scene, renderer, reflectionCamera, cubeRenderTarget;
 var floor, geometry, material, mesh, floorMesh, light, axes;
 var gui;
 var stats;
-var name;
 var helper;
 
 var change_material = false;
 
 const loader = new GLTFLoader();
-
-var change_material = false;
-
-const loader = new GLTFLoader();
-gui = new dat.GUI();
 
 // controls
 var controls, afControl;
@@ -300,7 +294,7 @@ function onWindowResize() {
 function initGUI() {
   gui = new dat.GUI();
 
-  h = gui.addFolder("Common");
+  var h = gui.addFolder("Common");
 
   h.add(settings["common"], "scale", 0.1, 2, 0.1).name("Scale").onChange(function () {
     mesh.scale.set(
@@ -366,7 +360,7 @@ function initGUI() {
     } else light.visible = false;
   });
 
-  h.add(settings["light"], "LightHelper").onChange(function () {
+  h.add(settings["light"], "lightHelper").onChange(function () {
     if (settings["light"].LightHelper == true) {
       helper.visible = true;
     } else helper.visible = false;
