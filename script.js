@@ -62,7 +62,8 @@ var settings = {
     this.geometry.color = "#9b9b9b";
     this.geometry.material = "Basic";
 
-    (this.light.lightType = "Point light"), (this.light.enable = true);
+    this.light.lightType = "Point light";
+    this.light.enable = true;
     this.light.lightHelper = false;
     this.light.autorotate = false;
     this.light.shadow = true;
