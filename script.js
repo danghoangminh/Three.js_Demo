@@ -51,7 +51,7 @@ var settings = {
     mode: "None",
   },
   animation: {
-    animation: "None",
+    mode: "None",
   },
   reset: function () {
     this.common.scale = 1;
@@ -308,6 +308,7 @@ function animate() {
     mesh.position.set(new_x, 1, new_z);
   }
 
+  
   if (settings["animation"].animation == "Animation 2") {
     render(mixer);
   }
@@ -461,11 +462,11 @@ function initGUI() {
 
   h = gui.addFolder("Animation");
 
-  h.add(settings["animation"], "animation", [
+  h.add(settings["animation"], "mode", [
     "None",
     "Animation 1",
     "Animation 2",
-  ]).name("Animation");
+  ]).name("Mode");
 
   gui.add(settings, "reset").name("Reset All");
 }
