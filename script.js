@@ -299,7 +299,7 @@ function animate() {
     if (alpha == 2 * Math.PI) alpha = 0;
   }
 
-  if (settings["animation"].animation == "Animation 1") {
+  if (settings["animation"].mode == "Animation 1") {
     alpha = Math.PI * 0.01 + alpha;
     var new_x = Math.sin(alpha);
     var new_z = Math.cos(alpha);
@@ -307,7 +307,7 @@ function animate() {
   }
 
   
-  if (settings["animation"].animation == "Animation 2") {
+  if (settings["animation"].mode == "Animation 2") {
     render(mixer);
   }
 
