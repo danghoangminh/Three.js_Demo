@@ -56,13 +56,13 @@ var settings = {
   reset: function () {
     this.common.scale = 1;
     this.common.autorotate = false;
-    this.common.showaxes = true;
 
     this.geometry.shape = "Cube";
     this.geometry.color = "#9b9b9b";
     this.geometry.material = "Basic";
 
-    (this.light.lightType = "Point light"), (this.light.enable = true);
+    this.light.lightType = "Point light";
+    this.light.enable = true;
     this.light.lightHelper = false;
     this.light.autorotate = false;
     this.light.shadow = true;
@@ -74,8 +74,7 @@ var settings = {
 
     this.affine.mode = "None";
 
-    this.animation.animation1 = false;
-    this.animation.animation2 = false;
+    this.animation.animation = "None";
 
     matChanged();
     affineChanged();
@@ -279,7 +278,6 @@ function animation2(mesh) {
   const clipAction = mixer.clipAction(clip);
   clipAction.play();
 
-  //
   clock = new THREE.Clock();
   return mixer;
 }
@@ -368,9 +366,7 @@ function initGUI() {
     "Wood texture 2",
     "Concrete texture 1",
     "Concrete texture 2",
-  ])
-    .name("Material")
-    .onChange(matChanged);
+  ]).name("Material").onChange(matChanged);
 
   h.add(settings["geometry"], "shape", [
     "Cube",
@@ -383,9 +379,7 @@ function initGUI() {
     "Pencil",
     "Pencil holder",
     "Paper plane",
-  ])
-    .name("Shape")
-    .onChange(geometryChanged);
+  ]).name("Shape").onChange(geometryChanged);
 
   h = gui.addFolder("Light");
 
@@ -394,9 +388,7 @@ function initGUI() {
     "Spot light",
     "Directional light",
     "Ambient light",
-  ])
-    .name("Light Type")
-    .onChange(lightChanged);
+  ]).name("Light Type").onChange(lightChanged);
 
   h.add(settings["light"], "enable")
     .name("Enable")
@@ -456,9 +448,12 @@ function initGUI() {
 
   h = gui.addFolder("Affine");
 
-  h.add(settings["affine"], "mode", ["None", "Translate", "Rotate", "Scale"])
-    .name("Mode")
-    .onChange(affineChanged);
+  h.add(settings["affine"], "mode", [
+    "None",
+    "Translate",
+    "Rotate",
+    "Scale",
+  ]).name("Mode").onChange(affineChanged);
 
   h = gui.addFolder("Animation");
 
