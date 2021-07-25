@@ -30,7 +30,7 @@ var settings = {
     autorotate: false,
     showaxes: true,
     near: 0.1,
-    far: 10,
+    far: 20,
   },
   geometry: {
     shape: "Cube",
@@ -186,7 +186,7 @@ function init() {
   controls = new THREE.OrbitControls(camera, renderer.domElement);
   controls.maxPolarAngle = Math.PI * 1;
   controls.minDistance = 1;
-  controls.maxDistance = 10;
+  controls.maxDistance = 20;
 
   afControl = new THREE.TransformControls(camera, renderer.domElement);
   afControl.addEventListener("change", function () {
