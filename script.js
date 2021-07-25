@@ -74,7 +74,7 @@ var settings = {
 
     this.affine.mode = "None";
 
-    this.animation.animation = "None";
+    this.animation.mode = "None";
 
     matChanged();
     affineChanged();
