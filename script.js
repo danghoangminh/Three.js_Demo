@@ -306,7 +306,6 @@ function animate() {
     mesh.position.set(new_x, 1, new_z);
   }
 
-  
   if (settings["animation"].mode == "Animation 2") {
     render(mixer);
   }
@@ -354,6 +353,21 @@ function initGUI() {
 
   h.addColor(settings["geometry"], "color").name("Color").onChange(matChanged);
 
+  h.add(settings["geometry"], "shape", [
+    "Cube",
+    "Cone",
+    "Sphere",
+    "Torus",
+    "Cylinder",
+    "Teapot",
+    "Tire",
+    "Pencil",
+    "Pencil holder",
+    "Paper plane",
+  ])
+    .name("Shape")
+    .onChange(geometryChanged);
+
   h.add(settings["geometry"], "material", [
     "Basic",
     "Normal",
@@ -366,20 +380,15 @@ function initGUI() {
     "Wood texture 2",
     "Concrete texture 1",
     "Concrete texture 2",
-  ]).name("Material").onChange(matChanged);
+  ])
+    .name("Material")
+    .onChange(matChanged);
 
-  h.add(settings["geometry"], "shape", [
-    "Cube",
-    "Cone",
-    "Sphere",
-    "Torus",
-    "Cylinder",
-    "Teapot",
-    "Tire",
-    "Pencil",
-    "Pencil holder",
-    "Paper plane",
-  ]).name("Shape").onChange(geometryChanged);
+  h = gui.addFolder("Affine");
+
+  h.add(settings["affine"], "mode", ["None", "Translate", "Rotate", "Scale"])
+    .name("Mode")
+    .onChange(affineChanged);
 
   h = gui.addFolder("Light");
 
@@ -388,7 +397,9 @@ function initGUI() {
     "Spot light",
     "Directional light",
     "Ambient light",
-  ]).name("Light Type").onChange(lightChanged);
+  ])
+    .name("Light Type")
+    .onChange(lightChanged);
 
   h.add(settings["light"], "enable")
     .name("Enable")
@@ -445,15 +456,6 @@ function initGUI() {
     .onChange(function () {
       light.intensity = settings["light"].intensity;
     });
-
-  h = gui.addFolder("Affine");
-
-  h.add(settings["affine"], "mode", [
-    "None",
-    "Translate",
-    "Rotate",
-    "Scale",
-  ]).name("Mode").onChange(affineChanged);
 
   h = gui.addFolder("Animation");
 
