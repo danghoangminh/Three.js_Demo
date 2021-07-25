@@ -30,7 +30,7 @@ var settings = {
     autorotate: false,
     showaxes: true,
     near: 0.1,
-    far: 20,
+    far: 200,
   },
   geometry: {
     shape: "Cube",
@@ -59,7 +59,7 @@ var settings = {
     this.common.scale = 1;
     this.common.autorotate = false;
     this.common.near = 0.1;
-    this.common.far = 20;
+    this.common.far = 200;
 
     this.geometry.shape = "Cube";
     this.geometry.color = "#9b9b9b";
@@ -186,7 +186,7 @@ function init() {
   controls = new THREE.OrbitControls(camera, renderer.domElement);
   controls.maxPolarAngle = Math.PI * 1;
   controls.minDistance = 1;
-  controls.maxDistance = 20;
+  controls.maxDistance = 50;
 
   afControl = new THREE.TransformControls(camera, renderer.domElement);
   afControl.addEventListener("change", function () {
@@ -362,7 +362,7 @@ function initGUI() {
     camera.updateProjectionMatrix();
   });
 
-  h.add(settings["common"], "far", 10, 20).name("Far").onChange(function () {
+  h.add(settings["common"], "far", 10, 200).name("Far").onChange(function () {
     camera.far = settings["common"].far;
     camera.updateProjectionMatrix();
   });
