@@ -59,7 +59,7 @@ var settings = {
     this.common.scale = 1;
     this.common.autorotate = false;
     this.common.near = 0.1;
-    this.common.far = 10;
+    this.common.far = 20;
 
     this.geometry.shape = "Cube";
     this.geometry.color = "#9b9b9b";
