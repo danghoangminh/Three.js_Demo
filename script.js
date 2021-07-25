@@ -29,6 +29,8 @@ var settings = {
     scale: 1,
     autorotate: false,
     showaxes: true,
+    near: 0.1,
+    far: 10,
   },
   geometry: {
     shape: "Cube",
@@ -56,6 +58,8 @@ var settings = {
   reset: function () {
     this.common.scale = 1;
     this.common.autorotate = false;
+    this.common.near = 0.1;
+    this.common.far = 10;
 
     this.geometry.shape = "Cube";
     this.geometry.color = "#9b9b9b";
@@ -80,6 +84,10 @@ var settings = {
     affineChanged();
     lightChanged();
     geometryChanged();
+
+    camera.near = this.common.near;
+    camera.far = this.common.far;
+    camera.updateProjectionMatrix();
   },
 };
 
@@ -91,8 +99,8 @@ function init() {
   camera = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
-    0.1,
-    1000
+    settings["common"].near,
+    settings["common"].far
   );
 
   camera.position.z = 2;
@@ -348,6 +356,16 @@ function initGUI() {
     });
 
   h.add(settings["common"], "autorotate").name("Auto Rotate");
+
+  h.add(settings["common"], "near", 0.1, 10).name("Near").onChange(function () {
+    camera.near = settings["common"].near;
+    camera.updateProjectionMatrix();
+  });
+
+  h.add(settings["common"], "far", 10, 20).name("Far").onChange(function () {
+    camera.far = settings["common"].far;
+    camera.updateProjectionMatrix();
+  });
 
   h = gui.addFolder("Geometry");
 
@@ -771,11 +789,6 @@ function clearGeometry() {
   for (var i = 0; i < scene.children.length; i++) {
     if (scene.children[i].name == "object") scene.remove(scene.children[i]);
   }
-}
-
-function clearAffine() {
-  afControl.detach();
-  settings["affine"].mode = "None";
 }
 
 function updateMesh(g, m) {
